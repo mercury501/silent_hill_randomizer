@@ -13,6 +13,8 @@ fn main() {
 	let mut my_app: data_structs::MyApp = data_structs::MyApp::default();
 	my_app.init();
 
+    my_app.testerino.bidello.insert("lello".to_string(), data_structs::miniTest{lello: 5});
+
     
     
     eframe::run_native(
@@ -32,22 +34,19 @@ impl eframe::App for data_structs::MyApp {
             ui.heading("Silent Hill Rustomizer");
            
             ui.horizontal(|ui| {
-                ui.label("Your name: ");
-                ui.text_edit_singleline(&mut self.name);
 
 				ui.vertical(|ui|{
-					ui.label(self.sliders.get("nurse").unwrap().main_name.to_string());
-					ui.add(egui::Slider::new(self.sliders.get("nurse").unwrap().main., 0..=100).text("Likelihood"));
+					ui.label(self.sliders[0].main_name.to_string());
+					ui.add(egui::Slider::new(
+                        &mut self.sliders[0].main, 
+                        0..=100)
+                        .text("Likelihood"));
 					
-					ui.label(self.sliders.get("nurse").unwrap().main.to_string());
+					ui.label(self.sliders[0].main.to_string());
 				});
             });
            
-            ui.add(egui::Slider::new(&mut self.age, 0..=120).text("age"));
-           
-            if ui.button("Click each year").clicked() {
-                self.age += 1;
-            }
+
 
 			if ui.button("Find SH3").clicked(){
 				if let Some(path) = FileDialog::new()
@@ -73,5 +72,40 @@ impl eframe::App for data_structs::MyApp {
 
             ui.label(format!("The SH3 exe path: {}", self.sh3_path));
         });
+    }
+
+    fn on_exit_event(&mut self) -> bool {
+        true
+    }
+
+    fn on_exit(&mut self, _gl: &eframe::glow::Context) {}
+
+    fn auto_save_interval(&self) -> std::time::Duration {
+        std::time::Duration::from_secs(30)
+    }
+
+    fn max_size_points(&self) -> egui::Vec2 {
+        egui::Vec2::INFINITY
+    }
+
+    fn clear_color(&self, _visuals: &egui::Visuals) -> egui::Rgba {
+        // NOTE: a bright gray makes the shadows of the windows look weird.
+        // We use a bit of transparency so that if the user switches on the
+        // `transparent()` option they get immediate results.
+        egui::Color32::from_rgba_unmultiplied(12, 12, 12, 180).into()
+
+        // _visuals.window_fill() would also be a natural choice
+    }
+
+    fn persist_native_window(&self) -> bool {
+        true
+    }
+
+    fn persist_egui_memory(&self) -> bool {
+        true
+    }
+
+    fn warm_up_enabled(&self) -> bool {
+        false
     }
 }

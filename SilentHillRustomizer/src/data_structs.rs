@@ -1,5 +1,27 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, hash::Hash};
 
+pub struct test{
+	pub bidello: HashMap<String, miniTest>,
+}
+
+impl Default for test {
+    fn default() -> Self{
+		Self{
+			bidello: HashMap::new(),
+		}
+	}
+}
+
+
+pub struct miniTest{
+	pub lello: i32,
+}
+
+impl Default for miniTest{
+	fn default() -> Self {
+		Self { lello: 5 }
+	}
+}
 
 pub struct SH3MobData{
     pub main: i32,
@@ -32,6 +54,12 @@ pub struct SH3MobData{
 	pub option_three_id: u32,
 	pub option_four_id: u32,
 	
+}
+
+impl SH3MobData {
+    pub fn main_mut(&mut self) -> &mut i32 {
+        &mut self.main
+    }
 }
 /*
 impl std::fmt::Display for SH3MobData{
@@ -128,7 +156,8 @@ pub struct MyApp {
     pub sh3_path: String,
 	pub sh3_exe_name: String,
 	sh3_prob_map: Vec<SH3Mob>,
-	pub sliders: HashMap<String, SH3MobData>,
+	pub sliders: Vec<SH3MobData>,
+	pub testerino: test,
 
 }
 
@@ -141,13 +170,14 @@ impl Default for MyApp {
             sh3_path: "D:/Games/Silent Hill 3/sh3.exe".to_owned(),
 			sh3_exe_name: "sh3.exe".to_owned(),
 			sh3_prob_map: Vec::new(),
-			sliders: HashMap::new(),
+			sliders: Vec::new(),
+			testerino: test::default(),
         }
     }
 }
 
-impl MyApp{
-
+impl MyApp {
+ 
 	pub fn init(&mut self){
 		let mut nurse = SH3MobData {
 			main: 100,
@@ -506,67 +536,57 @@ impl MyApp{
 
 		};
 
-		self.sliders.insert("nurse".to_string(), nurse);
-		self.sliders.insert("pendulum".to_string(), pendulum);
-		self.sliders.insert("closer".to_string(), closer);
-		self.sliders.insert("numb_body".to_string(), numb_body);
-		self.sliders.insert("brown_slurper".to_string(), brown_slurper);
-		self.sliders.insert("insane_cancer".to_string(), insane_cancer);
-		self.sliders.insert("dog".to_string(), dog);
-		self.sliders.insert("white_slurper".to_string(), white_slurper);
-		self.sliders.insert("scraper".to_string(), scraper);
-		self.sliders.insert("missionary".to_string(), missionary);
-		self.sliders.insert("leonard".to_string(), leonard);
-		self.sliders.insert("alessa".to_string(), alessa);
-		self.sliders.insert("god".to_string(), god);
+		self.sliders.push(nurse);
+		self.sliders.push(pendulum);
+		self.sliders.push(closer);
+		self.sliders.push(numb_body);
+		self.sliders.push(brown_slurper);
+		self.sliders.push(insane_cancer);
+		self.sliders.push(dog);
+		self.sliders.push(white_slurper);
+		self.sliders.push(scraper);
+		self.sliders.push(missionary);
+		self.sliders.push(leonard);
+		self.sliders.push(alessa);
+		self.sliders.push(god);
 
 		self.set_probability();
 
 	}
 
-	fn get_total_probabilities(&self) -> f32 {
-
-		let mut probs: f32 = 0.0;
-		for key in self.sliders.keys(){
-			probs = probs + self.sliders.get(key).unwrap().main as f32;
-		}
-	
-		return probs;
-	}
-	
 	pub fn set_probability(&mut self){
 		
-		for key in self.sliders.keys(){
+		for item in &self.sliders{
 
 		
 			
-			let total_probabilities: f32 = self.get_total_probabilities();
+			let total_probabilities: f32 = get_total_probabilities(&self.sliders);
 
-			let mut current_mob_probability: f32 = self.sliders.get(key).unwrap().main as f32 / total_probabilities;
+			let mut current_mob_probability: f32 = item.main as f32 / total_probabilities;
 			current_mob_probability = f32::trunc(current_mob_probability  * 100.0) / 100.0; //to limit to 2 decimal places
 			current_mob_probability *= 100.0; //to have a percentage
 
-			let current_mob_total_options_probability: i32 = self.sliders.get(key).unwrap().option_one + self.sliders.get(key).unwrap().option_two + self.sliders.get(key).unwrap().option_three + self.sliders.get(key).unwrap().option_four;
+			let current_mob_total_options_probability: i32 = item.option_one + item.option_two + item.option_three + item.option_four;
 
-			let option_one_normalized:f32 = self.sliders.get(key).unwrap().option_one as f32 / current_mob_total_options_probability as f32;
-			let option_two_normalized:f32 = self.sliders.get(key).unwrap().option_two as f32 / current_mob_total_options_probability as f32;
-			let option_three_normalized:f32 = self.sliders.get(key).unwrap().option_three as f32 / current_mob_total_options_probability as f32;
-			let option_four_normalized:f32 = self.sliders.get(key).unwrap().option_four as f32 / current_mob_total_options_probability as f32;
+			let option_one_normalized:f32 = item.option_one as f32 / current_mob_total_options_probability as f32;
+			let option_two_normalized:f32 = item.option_two as f32 / current_mob_total_options_probability as f32;
+			let option_three_normalized:f32 = item.option_three as f32 / current_mob_total_options_probability as f32;
+			let option_four_normalized:f32 = item.option_four as f32 / current_mob_total_options_probability as f32;
 
 
 			for n in 0..current_mob_probability as u32{
 
 				for i in 0..option_one_normalized as i32{
-					self.sh3_prob_map.push(SH3Mob { type_id: self.sliders.get(key).unwrap().type_id, option_id: self.sliders.get(key).unwrap().option_one_id });
+					self.sh3_prob_map.push(SH3Mob { type_id: item.type_id, option_id: item.option_one_id });
 				}
 				for i in 0..option_two_normalized as i32{
-					self.sh3_prob_map.push(SH3Mob { type_id: self.sliders.get(key).unwrap().type_id, option_id: self.sliders.get(key).unwrap().option_two_id });
+					self.sh3_prob_map.push(SH3Mob { type_id: item.type_id, option_id: item.option_two_id });
 				}
 				for i in 0..option_three_normalized as i32{
-					self.sh3_prob_map.push(SH3Mob { type_id: self.sliders.get(key).unwrap().type_id, option_id: self.sliders.get(key).unwrap().option_three_id });
+					self.sh3_prob_map.push(SH3Mob { type_id: item.type_id, option_id: item.option_three_id });
 				}
 				for i in 0..option_four_normalized as i32{
-					self.sh3_prob_map.push(SH3Mob { type_id: self.sliders.get(key).unwrap().type_id, option_id: self.sliders.get(key).unwrap().option_four_id });
+					self.sh3_prob_map.push(SH3Mob { type_id: item.type_id, option_id: item.option_four_id });
 				}
 
 			}
@@ -578,4 +598,15 @@ impl MyApp{
 		
 		
 	}
+
+}
+
+fn get_total_probabilities(vcmd: &Vec<SH3MobData>) -> f32 {
+
+	let mut probs: f32 = 0.0;
+	for item in vcmd{
+		probs = probs + item.main as f32;
+	}
+
+	return probs;
 }
