@@ -3,7 +3,7 @@
 mod data_structs;
 
 use eframe::egui;
-use std::process::Command;
+use std::{process::Command, borrow::{Borrow, BorrowMut}};
 use rfd::FileDialog;
 
 fn main() {
@@ -34,6 +34,13 @@ impl eframe::App for data_structs::MyApp {
             ui.horizontal(|ui| {
                 ui.label("Your name: ");
                 ui.text_edit_singleline(&mut self.name);
+
+				ui.vertical(|ui|{
+					ui.label(self.sliders.get("nurse").unwrap().main_name.to_string());
+					ui.add(egui::Slider::new(self.sliders.get("nurse").unwrap().main., 0..=100).text("Likelihood"));
+					
+					ui.label(self.sliders.get("nurse").unwrap().main.to_string());
+				});
             });
            
             ui.add(egui::Slider::new(&mut self.age, 0..=120).text("age"));

@@ -1,7 +1,4 @@
-use std::borrow::Borrow;
-use std::fmt;
 use std::collections::HashMap;
-use std::hash::Hash;
 
 
 pub struct SH3MobData{
@@ -131,7 +128,7 @@ pub struct MyApp {
     pub sh3_path: String,
 	pub sh3_exe_name: String,
 	sh3_prob_map: Vec<SH3Mob>,
-	sliders: HashMap<String, SH3MobData>,
+	pub sliders: HashMap<String, SH3MobData>,
 
 }
 
@@ -508,7 +505,7 @@ impl MyApp{
 			option_four_id: 0,
 
 		};
-		
+
 		self.sliders.insert("nurse".to_string(), nurse);
 		self.sliders.insert("pendulum".to_string(), pendulum);
 		self.sliders.insert("closer".to_string(), closer);
@@ -527,8 +524,7 @@ impl MyApp{
 
 	}
 
-	fn get_total_probabilities(&
-		self) -> f32 {
+	fn get_total_probabilities(&self) -> f32 {
 
 		let mut probs: f32 = 0.0;
 		for key in self.sliders.keys(){
