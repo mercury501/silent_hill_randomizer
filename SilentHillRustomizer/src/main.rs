@@ -1,5 +1,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] 
 
+mod data_structs;
+
 use eframe::egui;
 use std::process::Command;
 use rfd::FileDialog;
@@ -7,40 +9,23 @@ use rfd::FileDialog;
 fn main() {
     let options = eframe::NativeOptions::default();
     
-    let sh3_path = String::from("D:/Games/Silent Hill 3/sh3.exe");
+    let sliders = data_structs::SH3Sliders::default();
+
+	println!("{}", sliders);
 
     
     
     eframe::run_native(
         "Silent Hill Rustomizer",
         options,
-        Box::new(|_cc| Box::new(MyApp::default())),
+        Box::new(|_cc| Box::new(data_structs::MyApp::default())),
     );
 
     
 
 }
 
-struct MyApp {
-    name: String,
-    age: u32,
-    sh3_path: String,
-	sh3_exe_name: String,
-}
-
-
-impl Default for MyApp {
-    fn default() -> Self {
-        Self {
-            name: "Arthur".to_owned(),
-            age: 42,
-            sh3_path: "D:/Games/Silent Hill 3/sh3.exe".to_owned(),
-			sh3_exe_name : "sh3.exe".to_owned(),
-        }
-    }
-}
-
-impl eframe::App for MyApp {
+impl eframe::App for data_structs::MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
 
         egui::CentralPanel::default().show(ctx, |ui| {
