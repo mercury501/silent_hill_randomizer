@@ -158,6 +158,7 @@ pub struct MyApp {
 	sh3_prob_map: Vec<SH3Mob>,
 	pub sliders: Vec<SH3MobData>,
 	pub testerino: test,
+	pub high_score: i32,
 
 }
 
@@ -172,6 +173,8 @@ impl Default for MyApp {
 			sh3_prob_map: Vec::new(),
 			sliders: Vec::new(),
 			testerino: test::default(),
+			high_score: 0,
+
         }
     }
 }
@@ -556,7 +559,7 @@ impl MyApp {
 
 	pub fn set_probability(&mut self){
 		
-		for item in &self.sliders{
+		for item in &self.sliders {
 
 		
 			

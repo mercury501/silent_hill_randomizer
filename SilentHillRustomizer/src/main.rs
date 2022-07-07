@@ -1,6 +1,7 @@
 //#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] 
 
 mod data_structs;
+mod memory_management;
 
 use eframe::egui;
 use std::{process::Command, borrow::{Borrow, BorrowMut}};
@@ -42,7 +43,8 @@ impl eframe::App for data_structs::MyApp {
                         0..=100)
                         .text("Likelihood"));
 					
-					ui.label(self.sliders[0].main.to_string());
+					ui.label("HighScore: ");
+                    ui.label(self.high_score.to_string());
 				});
             });
            
@@ -62,10 +64,13 @@ impl eframe::App for data_structs::MyApp {
                 let sh3_process = Command::new(&self.sh3_path)
 				.spawn()
 				.expect("failed to execute process");
+
+                
             }
 
 			if ui.button("Update Probs").clicked() {
                 self.set_probability();
+                self.high_score = memory_management::read_highscore();
             }
            
             ui.label(format!("Hello '{}', age {}", self.name, self.age));
