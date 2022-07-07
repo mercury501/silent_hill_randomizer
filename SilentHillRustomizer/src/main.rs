@@ -1,4 +1,4 @@
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] 
+//#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] 
 
 mod data_structs;
 
@@ -7,27 +7,27 @@ use std::process::Command;
 use rfd::FileDialog;
 
 fn main() {
-    let options = eframe::NativeOptions::default();
-    
-    let sliders = data_structs::SH3Sliders::default();
-
-	println!("{}", sliders);
+	//println!("{}", sh3_prob_map.len());
+	let options = eframe::NativeOptions::default();
+	
+	let mut my_app: data_structs::MyApp = data_structs::MyApp::default();
+	my_app.init();
 
     
     
     eframe::run_native(
         "Silent Hill Rustomizer",
         options,
-        Box::new(|_cc| Box::new(data_structs::MyApp::default())),
+        Box::new(|_cc| Box::new(my_app)),
     );
 
-    
 
 }
 
 impl eframe::App for data_structs::MyApp {
-    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
 
+    fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
+		
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.heading("Silent Hill Rustomizer");
            
@@ -56,6 +56,10 @@ impl eframe::App for data_structs::MyApp {
                 let sh3_process = Command::new(&self.sh3_path)
 				.spawn()
 				.expect("failed to execute process");
+            }
+
+			if ui.button("Update Probs").clicked() {
+                self.set_probability();
             }
            
             ui.label(format!("Hello '{}', age {}", self.name, self.age));
