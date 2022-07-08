@@ -4,7 +4,7 @@ mod data_structs;
 mod memory_management;
 
 use eframe::egui;
-use std::{process::Command, borrow::{Borrow, BorrowMut}};
+use std::{process::Command};
 use rfd::FileDialog;
 
 fn main() {
@@ -14,9 +14,6 @@ fn main() {
 	let mut my_app: data_structs::MyApp = data_structs::MyApp::default();
 	my_app.init();
 
-    my_app.testerino.bidello.insert("lello".to_string(), data_structs::miniTest{lello: 5});
-
-    
     
     eframe::run_native(
         "Silent Hill Rustomizer",
@@ -73,8 +70,6 @@ impl eframe::App for data_structs::MyApp {
                 self.set_probability();
                 self.high_score = memory_management::read_highscore(self.sh3_process_id) as i32;
             }
-           
-            ui.label(format!("Hello '{}', age {}", self.name, self.age));
 
             ui.label(format!("The SH3 exe path: {}", self.sh3_path));
         });

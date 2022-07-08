@@ -1,27 +1,4 @@
-use std::{collections::HashMap, hash::Hash, process::Child};
-
-pub struct test{
-	pub bidello: HashMap<String, miniTest>,
-}
-
-impl Default for test {
-    fn default() -> Self{
-		Self{
-			bidello: HashMap::new(),
-		}
-	}
-}
-
-
-pub struct miniTest{
-	pub lello: i32,
-}
-
-impl Default for miniTest{
-	fn default() -> Self {
-		Self { lello: 5 }
-	}
-}
+use std::{collections::HashMap};
 
 pub struct SH3MobData{
     pub main: i32,
@@ -143,21 +120,11 @@ impl std::fmt::Display for SH3Mob{
     }
 }
 
-impl SH3Mob{
-	fn clone(&self) -> SH3Mob{
-		let ret = SH3Mob{type_id: self.type_id, option_id: self.option_id};
-		return ret;
-	}
-}
-
 pub struct MyApp {
-    pub name: String,
-    pub age: u32,
     pub sh3_path: String,
 	pub sh3_exe_name: String,
 	sh3_prob_map: Vec<SH3Mob>,
 	pub sliders: Vec<SH3MobData>,
-	pub testerino: test,
 	pub high_score: i32,
 	pub sh3_process_id: u32,
 
@@ -167,13 +134,10 @@ pub struct MyApp {
 impl Default for MyApp {
     fn default() -> Self {
         Self {
-            name: "Arthur".to_owned(),
-            age: 42,
             sh3_path: "D:/Games/Silent Hill 3/sh3.exe".to_owned(),
 			sh3_exe_name: "sh3.exe".to_owned(),
 			sh3_prob_map: Vec::new(),
 			sliders: Vec::new(),
-			testerino: test::default(),
 			high_score: 0,
 			sh3_process_id: 0,
 
@@ -182,7 +146,6 @@ impl Default for MyApp {
 }
 
 impl MyApp {
- 
 	pub fn init(&mut self){
 		let mut nurse = SH3MobData {
 			main: 100,
