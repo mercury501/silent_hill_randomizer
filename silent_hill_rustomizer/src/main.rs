@@ -8,7 +8,6 @@ use std::{process::Command};
 use rfd::FileDialog;
 
 fn main() {
-	//println!("{}", sh3_prob_map.len());
 	let options = eframe::NativeOptions::default();
 	
 	let mut my_app: data_structs::MyApp = data_structs::MyApp::default();
@@ -42,6 +41,13 @@ impl eframe::App for data_structs::MyApp {
                         self.sliders[0].main_mut(), 
                         0..=100)
                         .text("Likelihood"));
+
+                    ui.label(self.sliders[1].main_name.to_string());
+                    ui.add(egui::Slider::new(
+                        self.sliders[1].main_mut(), 
+                        0..=100)
+                        .text("Likelihood"));
+
 					
 					ui.horizontal(|ui|{
                         ui.vertical(|ui|{
@@ -51,6 +57,10 @@ impl eframe::App for data_structs::MyApp {
                         ui.vertical(|ui|{
                             ui.label("Bonus Points: ");
                             ui.label(self.bonus_points.to_string());
+                        });
+                        ui.vertical(|ui|{
+                            ui.label("Health Drinks: ");
+                            ui.label(self.health_drinks.to_string());
                         });
                     });
 				});
@@ -81,7 +91,18 @@ impl eframe::App for data_structs::MyApp {
                 self.set_probability();
                 self.high_score = memory_management::read_highscore(self.sh3_process_id) as i32;
                 self.bonus_points = memory_management::read_bonus(self.sh3_process_id);
+                self.health_drinks = memory_management::read_u8(self.sh3_process_id, 0x0712CAB2);
                 
+            }
+
+            if ui.button("Add 5 health drinks").clicked() {
+                let mut current_drinks = memory_management::read_u8(self.sh3_process_id, 0x0712CAB2);
+                current_drinks += 5;
+                let mut data_vec: Vec<u8> = Vec::new();
+                data_vec.push(current_drinks);
+                if !(current_drinks >= 255){
+                memory_management::write_byte_to_addr(self.sh3_process_id, &data_vec, 0x0712CAB2);
+                }
             }
 
             ui.label(format!("The SH3 exe path: {}", self.sh3_path));

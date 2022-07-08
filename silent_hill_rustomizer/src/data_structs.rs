@@ -1,7 +1,3 @@
-use std::{collections::HashMap};
-
-use vmemory::ProcessMemory;
-
 pub struct SH3MobData{
     pub main: i32,
     pub option_one: i32,
@@ -130,6 +126,7 @@ pub struct MyApp {
 	pub high_score: i32,
 	pub sh3_process_id: u32,
 	pub bonus_points: u32,
+	pub health_drinks: u8,
 
 }
 
@@ -144,6 +141,7 @@ impl Default for MyApp {
 			high_score: 0,
 			sh3_process_id: 0,
 			bonus_points: 0,
+			health_drinks: 0,
         }
     }
 }
