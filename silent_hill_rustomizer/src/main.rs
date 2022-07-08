@@ -70,7 +70,7 @@ impl eframe::App for data_structs::MyApp {
 
 			if ui.button("Update Probs").clicked() {
                 self.set_probability();
-                self.high_score = memory_management::read_highscore();
+                self.high_score = memory_management::read_highscore(self.sh3_process_id);
             }
            
             ui.label(format!("Hello '{}', age {}", self.name, self.age));

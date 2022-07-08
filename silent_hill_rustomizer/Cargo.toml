@@ -1,5 +1,5 @@
 [package]
-name = "SilentHillRustomizer"
+name = "silent_hill_rustomizer"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,4 +9,6 @@ edition = "2021"
 eframe = "0.18.0"
 rfd = "0.8.2"
 windows = "0.38.0"
-process-memory = "0.4.0"
+
+vmemory = "0.1.8"
+byteorder = "1.4.3"

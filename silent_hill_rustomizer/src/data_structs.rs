@@ -1,4 +1,4 @@
-use std::{collections::HashMap, hash::Hash};
+use std::{collections::HashMap, hash::Hash, process::Child};
 
 pub struct test{
 	pub bidello: HashMap<String, miniTest>,
@@ -158,7 +158,8 @@ pub struct MyApp {
 	sh3_prob_map: Vec<SH3Mob>,
 	pub sliders: Vec<SH3MobData>,
 	pub testerino: test,
-	pub high_score: i32,
+	pub high_score: u32,
+	pub sh3_process_id: u32,
 
 }
 
@@ -174,6 +175,7 @@ impl Default for MyApp {
 			sliders: Vec::new(),
 			testerino: test::default(),
 			high_score: 0,
+			sh3_process_id: 0,
 
         }
     }
