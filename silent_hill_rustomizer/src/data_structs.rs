@@ -1,5 +1,7 @@
 use std::{collections::HashMap};
 
+use vmemory::ProcessMemory;
+
 pub struct SH3MobData{
     pub main: i32,
     pub option_one: i32,

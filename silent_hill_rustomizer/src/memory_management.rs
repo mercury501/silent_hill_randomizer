@@ -2,14 +2,14 @@ use vmemory::{self, ProcessMemory};
 use byteorder::{BigEndian, ByteOrder};
 
 pub fn read_highscore(proc_id: u32) -> u32{
-    let addr:usize = 0x070E66F0- 0x400000;
+    let addr:usize = 0x070E66F0;
   
 
     let attached_proc = ProcessMemory::attach_process(proc_id).unwrap();
     attached_proc.resume();
 
 
-    let vmem = attached_proc.read_memory(addr, 4, true);
+    let vmem = attached_proc.read_memory(addr - attached_proc.base(), 4, true);
     
 	
     println!("Base addr: {:08X}",attached_proc.base());
@@ -34,16 +34,9 @@ pub fn read_bonus(proc_id: u32) -> u8{
     let attached_proc = ProcessMemory::attach_process(proc_id).unwrap();
     attached_proc.resume();
 
-
-    let vmem = attached_proc.read_memory(addr, 4, true);
+    let vmem = attached_proc.read_memory(addr - attached_proc.base(), 1, true);
     
-
-
     println!("{:08X}", vmem[0]);
-
-    //BigEndian::read_u32_into(&vmem[1..=8], &mut vec_hs);
-    //1740050
-
     
 	vmem[0]
 }
