@@ -13,15 +13,18 @@ fn main() {
 	
 	let mut my_app: data_structs::MyApp = data_structs::MyApp::default();
 	my_app.init();
-
     
     eframe::run_native(
         "Silent Hill Rustomizer",
         options,
-        Box::new(|_cc| Box::new(my_app)),
-    );
+        Box::new(|ctx: &eframe::CreationContext| {
+            let mut style = egui::Style::default();
+            style.visuals.dark_mode = true;
+            ctx.egui_ctx.set_style(style);
 
-
+            Box::new(my_app)
+        }),
+    ); 
 }
 
 impl eframe::App for data_structs::MyApp {
@@ -69,6 +72,8 @@ impl eframe::App for data_structs::MyApp {
 			if ui.button("Update Probs").clicked() {
                 self.set_probability();
                 self.high_score = memory_management::read_highscore(self.sh3_process_id) as i32;
+                //memory_management::read_bonus(self.sh3_process_id);
+                //memory_management::kill_proc(self.sh3_process_id);
             }
 
             ui.label(format!("The SH3 exe path: {}", self.sh3_path));
