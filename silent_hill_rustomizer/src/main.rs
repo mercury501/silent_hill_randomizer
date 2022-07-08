@@ -43,8 +43,16 @@ impl eframe::App for data_structs::MyApp {
                         0..=100)
                         .text("Likelihood"));
 					
-					ui.label("HighScore: ");
-                    ui.label(self.high_score.to_string());
+					ui.horizontal(|ui|{
+                        ui.vertical(|ui|{
+                            ui.label("High Score: ");
+                            ui.label(self.high_score.to_string());
+                        });
+                        ui.vertical(|ui|{
+                            ui.label("Bonus Points: ");
+                            ui.label(self.bonus_points.to_string());
+                        });
+                    });
 				});
             });
            
@@ -72,8 +80,8 @@ impl eframe::App for data_structs::MyApp {
 			if ui.button("Update Probs").clicked() {
                 self.set_probability();
                 self.high_score = memory_management::read_highscore(self.sh3_process_id) as i32;
-                //memory_management::read_bonus(self.sh3_process_id);
-                //memory_management::kill_proc(self.sh3_process_id);
+                self.bonus_points = memory_management::read_bonus(self.sh3_process_id);
+                
             }
 
             ui.label(format!("The SH3 exe path: {}", self.sh3_path));

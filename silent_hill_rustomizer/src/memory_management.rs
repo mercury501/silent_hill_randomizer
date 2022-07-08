@@ -1,5 +1,5 @@
 use vmemory::{self, ProcessMemory};
-use byteorder::{BigEndian, ByteOrder};
+use byteorder::{BigEndian, ByteOrder, LittleEndian};
 
 pub fn read_highscore(proc_id: u32) -> u32{
     let addr:usize = 0x070E66F0;
@@ -9,7 +9,7 @@ pub fn read_highscore(proc_id: u32) -> u32{
     attached_proc.resume();
 
 
-    let vmem = attached_proc.read_memory(addr - attached_proc.base(), 4, true);
+    let vmem = attached_proc.read_memory(addr, 4, false);
     
 	
     println!("Base addr: {:08X}",attached_proc.base());
@@ -23,24 +23,28 @@ pub fn read_highscore(proc_id: u32) -> u32{
     u32_le_wrapper(&vmem)
 }
 
-pub fn kill_proc(proc_id: u32){
-	let attached_proc = ProcessMemory::attach_process(proc_id).unwrap();
-	attached_proc.kill()
-}
-
-pub fn read_bonus(proc_id: u32) -> u8{
+pub fn read_bonus(proc_id: u32) -> u32{
     let addr:usize = 0x0712C59C; 
 
     let attached_proc = ProcessMemory::attach_process(proc_id).unwrap();
     attached_proc.resume();
 
-    let vmem = attached_proc.read_memory(addr - attached_proc.base(), 1, true);
+    let vmem = attached_proc.read_memory(addr, 4, false);
     
-    println!("{:08X}", vmem[0]);
+    //println!("{}", f32_le_wrapper(&vmem));
     
-	vmem[0]
+    f32_le_wrapper(&vmem) as u32
 }
 
+fn f32_le_wrapper(vect: &Vec<u8>) -> f32{
+    let mut arr: [u8;4] = [0;4];
+
+    for i in 0..4{
+        arr[i] = vect[i];
+    }
+    
+    LittleEndian::read_f32(&arr)
+}
 
 fn u32_le_wrapper(vect: &Vec<u8>) -> u32 {
     let mut arr: [u8;4] = [0;4];

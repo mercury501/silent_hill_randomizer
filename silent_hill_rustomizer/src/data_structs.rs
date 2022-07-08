@@ -112,7 +112,7 @@ impl Default for SH3Mob{
         }
     }
 }
-//println!("{:#04x}", 10);
+
 impl std::fmt::Display for SH3Mob{
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {        
         write!(f, "[TypeID: {:#04x}, OptionID: {:#04x}]", 
@@ -129,6 +129,7 @@ pub struct MyApp {
 	pub sliders: Vec<SH3MobData>,
 	pub high_score: i32,
 	pub sh3_process_id: u32,
+	pub bonus_points: u32,
 
 }
 
@@ -142,7 +143,7 @@ impl Default for MyApp {
 			sliders: Vec::new(),
 			high_score: 0,
 			sh3_process_id: 0,
-
+			bonus_points: 0,
         }
     }
 }
@@ -562,9 +563,10 @@ impl MyApp {
 			}
 		
 		}
+		/*
 		for l in 0..self.sh3_prob_map.len(){
 			println!("{}", self.sh3_prob_map[l]);
-		}
+		}*/
 		
 		
 	}
