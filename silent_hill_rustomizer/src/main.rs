@@ -39,7 +39,7 @@ impl eframe::App for data_structs::MyApp {
 				ui.vertical(|ui|{
 					ui.label(self.sliders[0].main_name.to_string());
 					ui.add(egui::Slider::new(
-                        &mut self.sliders[0].main, 
+                        self.sliders[0].main_mut(), 
                         0..=100)
                         .text("Likelihood"));
 					
@@ -65,12 +65,13 @@ impl eframe::App for data_structs::MyApp {
 				.spawn()
 				.expect("failed to execute process");
 
+                self.sh3_process_id = sh3_process.id();
                 
             }
 
 			if ui.button("Update Probs").clicked() {
                 self.set_probability();
-                self.high_score = memory_management::read_highscore(self.sh3_process_id);
+                self.high_score = memory_management::read_highscore(self.sh3_process_id) as i32;
             }
            
             ui.label(format!("Hello '{}', age {}", self.name, self.age));

@@ -7,7 +7,7 @@ pub fn read_highscore(proc_id: u32) -> u32{
     let addr:usize = 0x070E66F0;
   
 
-    let mut attached_proc = ProcessMemory::attach_process(proc_id).unwrap();
+    let attached_proc = ProcessMemory::attach_process(proc_id).unwrap();
     attached_proc.resume();
 
     /*

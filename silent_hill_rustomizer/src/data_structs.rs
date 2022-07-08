@@ -158,7 +158,7 @@ pub struct MyApp {
 	sh3_prob_map: Vec<SH3Mob>,
 	pub sliders: Vec<SH3MobData>,
 	pub testerino: test,
-	pub high_score: u32,
+	pub high_score: i32,
 	pub sh3_process_id: u32,
 
 }
