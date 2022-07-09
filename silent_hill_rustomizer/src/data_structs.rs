@@ -1,3 +1,22 @@
+use crate::mem_mgmt;
+use rand::prelude::SliceRandom;
+
+pub struct SH3Addresses {
+    pub high_score: usize,    
+    pub health_drinks: usize, 
+    pub bonus_points: usize,  
+}
+
+impl Default for SH3Addresses {
+    fn default() -> Self {
+        Self {
+            high_score: 0x070E66F0, 	//i32
+            health_drinks: 0x0712CAB2, 	//u8
+            bonus_points: 0x0712C59C, 	//f32
+        }
+    }
+}
+
 pub struct SH3MobData {
     pub main: i32,
     pub option_one: i32,
@@ -96,32 +115,32 @@ impl std::fmt::Display for SH3Mob {
     }
 }
 
-pub struct SH3MobPercStrings{
-	pub main_str: [String;13],
-	pub option_one_str: [String; 13],
-	pub option_two_str: [String; 13],
-	pub option_three_str: [String; 13],
-	pub option_four_str: [String; 13],
+pub struct SH3MobPercStrings {
+    pub main_str: [String; 13],
+    pub option_one_str: [String; 13],
+    pub option_two_str: [String; 13],
+    pub option_three_str: [String; 13],
+    pub option_four_str: [String; 13],
 }
 
-impl Default for SH3MobPercStrings{
-	fn default() -> Self {
-		Self { 
-			main_str: Default::default(),
-			option_one_str: Default::default(),
-			option_two_str: Default::default(),
-			option_three_str: Default::default(),
-			option_four_str: Default::default(),
-		 }
-	}
+impl Default for SH3MobPercStrings {
+    fn default() -> Self {
+        Self {
+            main_str: Default::default(),
+            option_one_str: Default::default(),
+            option_two_str: Default::default(),
+            option_three_str: Default::default(),
+            option_four_str: Default::default(),
+        }
+    }
 }
 
 #[derive(Debug, std::cmp::PartialEq)]
 pub enum Tabs {
     SH3Probabilities,
     SH3InfoItems,
-	SH2Probabilities,
-	SH2InfoItems,
+    SH2Probabilities,
+    SH2InfoItems,
 }
 
 pub struct MyApp {
@@ -134,7 +153,10 @@ pub struct MyApp {
     pub sh3_process_id: u32,
     pub bonus_points: u32,
     pub health_drinks: u8,
-	pub sh3_perc_strings: SH3MobPercStrings,
+    pub sh3_perc_strings: SH3MobPercStrings,
+	pub sh3_addresses: SH3Addresses,
+	pub sh3_randomizable_type_id: Vec<i32>,
+	pub sh3_not_randomizable_gid: Vec<i32>,
 }
 
 impl Default for MyApp {
@@ -149,33 +171,54 @@ impl Default for MyApp {
             sh3_process_id: 0,
             bonus_points: 0,
             health_drinks: 0,
-			sh3_perc_strings: SH3MobPercStrings::default()
+            sh3_perc_strings: SH3MobPercStrings::default(),
+			sh3_addresses: SH3Addresses::default(),
+			sh3_randomizable_type_id: vec![0x200, 0x201, 0x202, 0x203, 0x204, 0x205, 0x206, 0x20A, 0x20B, 0x211, 0x213, 0x215],
+			sh3_not_randomizable_gid: vec![17, 240, 310, 397],
         }
     }
 }
 
 impl MyApp {
     pub fn set_probability(&mut self) {
-        for item in &self.sh3_sliders {
-            let total_probabilities: f32 = get_total_probabilities(&self.sh3_sliders);
+		let total_probabilities: f32 = get_total_probabilities(&self.sh3_sliders) as f32;
+        for item in &mut self.sh3_sliders {
 
             let mut current_mob_probability: f32 = item.main as f32 / total_probabilities;
             current_mob_probability = f32::trunc(current_mob_probability * 100.0) / 100.0; //to limit to 2 decimal places
             current_mob_probability *= 100.0; //to have a percentage
 
-            let current_mob_total_options_probability: i32 =
+            let mut current_mob_total_options_probability: i32 =
                 item.option_one + item.option_two + item.option_three + item.option_four;
 
+            if current_mob_total_options_probability == 0 {
+                item.option_one = 100;
+                current_mob_total_options_probability = 100;
+             }
+			
             let option_one_normalized: f32 =
-                item.option_one   as f32 / current_mob_total_options_probability as f32;
+                item.option_one as f32 / current_mob_total_options_probability as f32;
             let option_two_normalized: f32 =
-                item.option_two   as f32 / current_mob_total_options_probability as f32;
+                item.option_two as f32 / current_mob_total_options_probability as f32;
             let option_three_normalized: f32 =
                 item.option_three as f32 / current_mob_total_options_probability as f32;
             let option_four_normalized: f32 =
-                item.option_four  as f32 / current_mob_total_options_probability as f32;
-			#[allow(unused)]
-            for n in 0..current_mob_probability as u32 {
+                item.option_four as f32 / current_mob_total_options_probability as f32;
+            /*
+			item.main_perc_string = current_mob_probability.to_string();
+			item.option_one_perc_string = option_one_normalized.to_string();
+			item.option_two_perc_string = option_two_normalized.to_string();
+			item.option_three_perc_string = option_three_normalized.to_string();
+			item.option_four_perc_string = option_four_normalized.to_string();
+            */
+            /*
+			println!("Current mob: {}, percs: {}, {}, {}\n" , item.main_name, current_mob_probability.to_string() ,
+				option_one_normalized.to_string() , option_two_normalized.to_string());
+			println!("current perc strings {} {} {} {} {}", item.main_perc_string, item.option_one_perc_string, item.option_two_perc_string,
+					item.option_three_perc_string, item.option_four_perc_string);
+            */
+            #[allow(unused)]
+            for n in 0..current_mob_probability as u32 {//TODO test
                 for i in 0..option_one_normalized as i32 {
                     self.sh3_prob_map.push(SH3Mob {
                         type_id: item.type_id,
@@ -202,19 +245,72 @@ impl MyApp {
                 }
             }
         }
-        /*
+
+		self.inject_values();
+        
         for l in 0..self.sh3_prob_map.len(){
             println!("{}", self.sh3_prob_map[l]);
-        }*/
+        }
     }
-    
+
+	fn can_randomize_gid(&mut self, gid: &i32) -> bool{
+		if self.sh3_not_randomizable_gid.contains(&gid){
+			return false;
+		}
+		if gid < &0x101 || gid > &0x119 {
+			return true;
+		}
+		false
+	}
+
+	fn inject_values(&mut self) {
+		let addr: usize = 0x006cf7d0;
+		let mut rng = rand::thread_rng();
+		let mut ents_addr: usize;
+		let mut ptr_addr: usize;
+		let mut type_id: i32;
+		let mut gid: i32;
+		let mut random_mob: &SH3Mob;
+
+
+		for offset in 0..40 {
+				ptr_addr = mem_mgmt::read_u32(self.sh3_process_id, addr + (offset * 4)) as usize;
+				if ptr_addr == 0{
+					break;
+				}
+
+				ents_addr = mem_mgmt::read_u32(self.sh3_process_id, ptr_addr + 16) as usize;
+				if ents_addr == 0{
+					break;
+				}
+
+				loop {//TODO test
+					type_id = mem_mgmt::read_u16(self.sh3_process_id, ents_addr) as i32;
+					gid = mem_mgmt::read_u16(self.sh3_process_id, ents_addr + 2) as i32;
+
+					if type_id == 0{
+						break;
+					}
+
+					if (self.sh3_randomizable_type_id.contains(&type_id) && self.can_randomize_gid(&gid)){
+						random_mob = self.sh3_prob_map.choose(&mut rng).unwrap();
+                        println!("Writing id {}, opt {}", random_mob.type_id, random_mob.option_id);
+						mem_mgmt::write_u32(self.sh3_process_id, ents_addr, random_mob.type_id as u64);
+						mem_mgmt::write_u32(self.sh3_process_id, ents_addr + 0x16, random_mob.option_id as u64);
+					}
+
+					ents_addr += 0x18;
+				}
+
+		}
+	}
 }
 
-fn get_total_probabilities(vcmd: &Vec<SH3MobData>) -> f32 {
-    let mut probs: f32 = 0.0;
+fn get_total_probabilities(vcmd: &Vec<SH3MobData>) -> u32 {
+    let mut probs: u32 = 0;
 
     for item in vcmd {
-        probs = probs + item.main as f32;
+        probs = probs + item.main as u32;
     }
 
     probs

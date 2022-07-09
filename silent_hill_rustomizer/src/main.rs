@@ -37,7 +37,6 @@ impl eframe::App for data_structs::MyApp {
         egui::CentralPanel::default()
             .frame(main_frame)
             .show(ctx, |ui| {
-                //ui.heading("Silent Hill Rustomizer");
                 self.main_ui(ui, _frame);
             });
 

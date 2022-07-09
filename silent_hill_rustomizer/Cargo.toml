@@ -9,6 +9,6 @@ edition = "2021"
 eframe = "0.18.0"
 rfd = "0.8.2"
 windows = "0.38.0"
-
+rand = "0.8.5"
 vmemory = "0.1.8"
 byteorder = "1.4.3"
