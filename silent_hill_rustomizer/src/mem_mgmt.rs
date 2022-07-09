@@ -110,7 +110,7 @@ fn vec_to_u32_le_wrapper(vect: &Vec<u8>) -> u32{
 fn vec_to_u16_le_wrapper(vect: &Vec<u8>) -> u16{
     let mut arr: [u8;4] = [0;4];
 
-    for i in 0..4{
+    for i in 0..2{
         arr[i] = vect[i];
     }
 

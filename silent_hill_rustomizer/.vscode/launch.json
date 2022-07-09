@@ -1,0 +1,45 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'silent_hill_rustomizer'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=silent_hill_rustomizer",
+                    "--package=silent_hill_rustomizer"
+                ],
+                "filter": {
+                    "name": "silent_hill_rustomizer",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'silent_hill_rustomizer'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=silent_hill_rustomizer",
+                    "--package=silent_hill_rustomizer"
+                ],
+                "filter": {
+                    "name": "silent_hill_rustomizer",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

@@ -191,10 +191,11 @@ impl MyApp {
             let mut current_mob_total_options_probability: i32 =
                 item.option_one + item.option_two + item.option_three + item.option_four;
 
+            /*    
             if current_mob_total_options_probability == 0 {
                 item.option_one = 100;
                 current_mob_total_options_probability = 100;
-             }
+             }*/
 			
             let option_one_normalized: f32 =
                 item.option_one as f32 / current_mob_total_options_probability as f32;
@@ -245,7 +246,7 @@ impl MyApp {
                 }
             }
         }
-
+        //TODO fixare la mappa
 		self.inject_values();
         
         for l in 0..self.sh3_prob_map.len(){
@@ -272,16 +273,18 @@ impl MyApp {
 		let mut gid: i32;
 		let mut random_mob: &SH3Mob;
 
-
+        if self.sh3_process_id == 0{
+            return;
+        }
 		for offset in 0..40 {
 				ptr_addr = mem_mgmt::read_u32(self.sh3_process_id, addr + (offset * 4)) as usize;
 				if ptr_addr == 0{
-					break;
+					continue;
 				}
 
 				ents_addr = mem_mgmt::read_u32(self.sh3_process_id, ptr_addr + 16) as usize;
 				if ents_addr == 0{
-					break;
+					continue;
 				}
 
 				loop {//TODO test
@@ -294,7 +297,7 @@ impl MyApp {
 
 					if (self.sh3_randomizable_type_id.contains(&type_id) && self.can_randomize_gid(&gid)){
 						random_mob = self.sh3_prob_map.choose(&mut rng).unwrap();
-                        println!("Writing id {}, opt {}", random_mob.type_id, random_mob.option_id);
+                        println!("Writing id {:#04x}, opt {:#04x}", random_mob.type_id, random_mob.option_id);
 						mem_mgmt::write_u32(self.sh3_process_id, ents_addr, random_mob.type_id as u64);
 						mem_mgmt::write_u32(self.sh3_process_id, ents_addr + 0x16, random_mob.option_id as u64);
 					}
