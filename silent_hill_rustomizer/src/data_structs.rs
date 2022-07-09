@@ -1,3 +1,6 @@
+use crate::egui;
+use crate::memory_management;
+
 pub struct SH3MobData{
     pub main: i32,
     pub option_one: i32,
@@ -117,8 +120,14 @@ impl std::fmt::Display for SH3Mob{
     )
     }
 }
+#[derive(Debug, std::cmp::PartialEq)]
+pub enum Tabs {
+    Probabilities,
+    InfoItems,
+}
 
 pub struct MyApp {
+	pub selected_tab: Tabs,
     pub sh3_path: String,
 	pub sh3_exe_name: String,
 	sh3_prob_map: Vec<SH3Mob>,
@@ -134,6 +143,7 @@ pub struct MyApp {
 impl Default for MyApp {
     fn default() -> Self {
         Self {
+			selected_tab: Tabs::Probabilities,
             sh3_path: "D:/Games/Silent Hill 3/sh3.exe".to_owned(),
 			sh3_exe_name: "sh3.exe".to_owned(),
 			sh3_prob_map: Vec::new(),
@@ -568,6 +578,91 @@ impl MyApp {
 		
 		
 	}
+
+	pub fn main_ui(&mut self, ui: &mut egui::Ui, frame: &mut eframe::Frame){
+        ui.horizontal(|ui| {
+            ui.selectable_value(&mut self.selected_tab, Tabs::Probabilities, "Probabilities");
+            ui.selectable_value(&mut self.selected_tab, Tabs::InfoItems, "Info - Items");
+        });
+
+        ui.separator();
+
+        match self.selected_tab {
+            Tabs::Probabilities => self.probs_ui(ui, frame),
+            Tabs::InfoItems => self.info_ui(ui),
+        }
+    }
+
+    fn probs_ui(&mut self, ui: &mut egui::Ui, frame: &mut eframe::Frame){
+        ui.vertical(|ui| {
+            //nurse
+            ui.label(self.sliders[0].main_name.to_string());
+            ui.add(
+                egui::Slider::new(self.sliders[0].main_mut(), 0..=100)
+                    .text("Likel"),
+            );
+
+            ui.label(self.sliders[0].main_name.to_string() + " - " + &self.sliders[0].option_one_name.to_string());
+            ui.add(
+                egui::Slider::new(&mut self.sliders[0].option_one, 0..=100)
+                    .text("Likel"),
+            );
+
+            ui.label(self.sliders[0].main_name.to_string() + " - " + &self.sliders[0].option_two_name.to_string());
+            ui.add(
+                egui::Slider::new(&mut self.sliders[0].option_two, 0..=100)
+                    .text("Likel"),
+            );
+
+            ui.label(self.sliders[0].main_name.to_string() + " - " + &self.sliders[0].option_three_name.to_string());
+            ui.add(
+                egui::Slider::new(&mut self.sliders[0].option_three, 0..=100)
+                    .text("Likel"),
+            );
+
+            ui.label(self.sliders[0].main_name.to_string() + " - " + &self.sliders[0].option_four_name.to_string());
+            ui.add(
+                egui::Slider::new(&mut self.sliders[0].option_four, 0..=100)
+                    .text("Likel"),
+            );
+        });
+  
+    }
+
+    fn info_ui(&mut self, ui: &mut egui::Ui){
+        ui.vertical(|ui| {
+            ui.vertical(|ui| {
+                ui.label("High Score: ");
+                ui.label(self.high_score.to_string());
+            });
+            ui.vertical(|ui| {
+                ui.label("Bonus Points: ");
+                ui.label(self.bonus_points.to_string());
+            });
+            ui.vertical(|ui| {
+                ui.label("Health Drinks: ");
+                ui.label(self.health_drinks.to_string());
+            });
+
+            if ui.button("Add 5 health drinks").clicked() {
+                let mut current_drinks =
+                    memory_management::read_u8(self.sh3_process_id, 0x0712CAB2);
+                current_drinks += 5;
+                let mut data_vec: Vec<u8> = Vec::new();
+                data_vec.push(current_drinks);
+                if !(current_drinks >= 255) {
+                    memory_management::write_byte_to_addr(
+                        self.sh3_process_id,
+                        &data_vec,
+                        0x0712CAB2,
+                    );
+                }
+            }
+        });
+
+        
+
+    }
 
 }
 

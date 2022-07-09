@@ -1,18 +1,21 @@
-//#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")] 
+//#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod data_structs;
 mod memory_management;
 
 use eframe::egui;
-use std::{process::Command};
 use rfd::FileDialog;
+use std::process::Command;
+
+
+
 
 fn main() {
-	let options = eframe::NativeOptions::default();
-	
-	let mut my_app: data_structs::MyApp = data_structs::MyApp::default();
-	my_app.init();
-    
+    let options = eframe::NativeOptions::default();
+
+    let mut my_app: data_structs::MyApp = data_structs::MyApp::default();
+    my_app.init();
+
     eframe::run_native(
         "Silent Hill Rustomizer",
         options,
@@ -23,89 +26,59 @@ fn main() {
 
             Box::new(my_app)
         }),
-    ); 
+    );
 }
 
 impl eframe::App for data_structs::MyApp {
-
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
-		
-        egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("Silent Hill Rustomizer");
-           
-            ui.horizontal(|ui| {
+        let main_frame = egui::containers::Frame {
+            rounding: egui::Rounding::none(),
+            ..egui::containers::Frame::window(&egui::Style::default())
+        };
 
-				ui.vertical(|ui|{
-					ui.label(self.sliders[0].main_name.to_string());
-					ui.add(egui::Slider::new(
-                        self.sliders[0].main_mut(), 
-                        0..=100)
-                        .text("Likelihood"));
+        egui::CentralPanel::default().frame(main_frame).show(ctx, |ui| {
+            //ui.heading("Silent Hill Rustomizer");
+            self.main_ui(ui, _frame);
+            
+ 
+            
+       
+        });
 
-                    ui.label(self.sliders[1].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sliders[1].main_mut(), 
-                        0..=100)
-                        .text("Likelihood"));
-
-					
-					ui.horizontal(|ui|{
-                        ui.vertical(|ui|{
-                            ui.label("High Score: ");
-                            ui.label(self.high_score.to_string());
-                        });
-                        ui.vertical(|ui|{
-                            ui.label("Bonus Points: ");
-                            ui.label(self.bonus_points.to_string());
-                        });
-                        ui.vertical(|ui|{
-                            ui.label("Health Drinks: ");
-                            ui.label(self.health_drinks.to_string());
-                        });
-                    });
-				});
-            });
-           
-
-
-			if ui.button("Find SH3").clicked(){
-				if let Some(path) = FileDialog::new()
-                    .add_filter("Executable", &["exe"])
-                    .pick_file()
-                {
-                    self.sh3_exe_name = path.file_name().unwrap().to_str().unwrap().to_owned();
-                    self.sh3_path = path.display().to_string();
+        egui::TopBottomPanel::bottom("bottom")
+        .frame(main_frame)
+        .show(ctx, |ui|{
+            ui.horizontal(|ui|{
+                if ui.button("Update Probs").clicked() {
+                    self.set_probability();
+                    self.high_score = memory_management::read_highscore(self.sh3_process_id) as i32;
+                    self.bonus_points = memory_management::read_bonus(self.sh3_process_id);
+                    self.health_drinks =
+                        memory_management::read_u8(self.sh3_process_id, 0x0712CAB2);
                 }
-			}
 
-			if ui.button("Click to start SH3").clicked() {
-                let sh3_process = Command::new(&self.sh3_path)
-				.spawn()
-				.expect("failed to execute process");
-
-                self.sh3_process_id = sh3_process.id();
-                
-            }
-
-			if ui.button("Update Probs").clicked() {
-                self.set_probability();
-                self.high_score = memory_management::read_highscore(self.sh3_process_id) as i32;
-                self.bonus_points = memory_management::read_bonus(self.sh3_process_id);
-                self.health_drinks = memory_management::read_u8(self.sh3_process_id, 0x0712CAB2);
-                
-            }
-
-            if ui.button("Add 5 health drinks").clicked() {
-                let mut current_drinks = memory_management::read_u8(self.sh3_process_id, 0x0712CAB2);
-                current_drinks += 5;
-                let mut data_vec: Vec<u8> = Vec::new();
-                data_vec.push(current_drinks);
-                if !(current_drinks >= 255){
-                memory_management::write_byte_to_addr(self.sh3_process_id, &data_vec, 0x0712CAB2);
+                if ui.button("Find SH3").clicked() {
+                    if let Some(path) = FileDialog::new()
+                        .add_filter("Executable", &["exe"])
+                        .pick_file()
+                    {
+                        self.sh3_exe_name = path.file_name().unwrap().to_str().unwrap().to_owned();
+                        self.sh3_path = path.display().to_string();
+                    }
                 }
-            }
+                
+                if ui.button("Click to start SH3").clicked() {
+                    let sh3_process = Command::new(&self.sh3_path)
+                        .spawn()
+                        .expect("failed to execute process");
 
-            ui.label(format!("The SH3 exe path: {}", self.sh3_path));
+                    self.sh3_process_id = sh3_process.id();
+                }
+
+                ui.label(format!("The SH3 exe path: {}", self.sh3_path));
+            }
+            );
+
         });
     }
 
