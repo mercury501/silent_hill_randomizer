@@ -8,6 +8,7 @@ mod data_storage;
 use eframe::egui;
 use crate::egui::Vec2;
 
+//TODO verify exes, close and reopen on button "start", add more items to info panels
 fn main() {
 	let mut options = eframe::NativeOptions::default();
 	options.initial_window_size = Option::from(Vec2::new(600 as f32, 680 as f32));

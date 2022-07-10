@@ -21,6 +21,17 @@ impl Default for SH3Addresses {
     }
 }
 
+pub struct SH2Addresses {
+    pub rng_seed: u32,
+}
+
+pub struct SH2MobData {
+    pub main: i32,
+    pub main_name: String,
+    pub main_perc_string: String,
+    pub type_id: u32,
+}
+
 pub struct SH3MobData {
     pub main: i32,
     pub option_one: i32,
@@ -53,90 +64,13 @@ pub struct SH3MobData {
     pub option_four_id: u32,
 }
 
-impl SH3MobData {
-    pub fn main_mut(&mut self) -> &mut i32 {
-        &mut self.main
-    }
-}
-
-impl Default for SH3MobData {
-    fn default() -> Self {
-        Self {
-            main: 0,
-            option_one: 0,
-            option_two: 0,
-            option_three: 0,
-            option_four: 0,
-
-            main_name: "".to_owned(),
-            option_one_name: "".to_owned(),
-            option_two_name: "".to_owned(),
-            option_three_name: "".to_owned(),
-            option_four_name: "".to_owned(),
-
-            main_perc: 1.0,
-            option_one_perc: 1.0,
-            option_two_perc: 0.0,
-            option_three_perc: 0.0,
-            option_four_perc: 0.0,
-
-            main_perc_string: "".to_owned(),
-            option_one_perc_string: "".to_owned(),
-            option_two_perc_string: "".to_owned(),
-            option_three_perc_string: "".to_owned(),
-            option_four_perc_string: "".to_owned(),
-
-            type_id: 0,
-            option_one_id: 0,
-            option_two_id: 0,
-            option_three_id: 0,
-            option_four_id: 0,
-        }
-    }
-}
-
 pub struct SH3Mob {
     pub type_id: u32,
     pub option_id: u32,
 }
 
-impl Default for SH3Mob {
-    fn default() -> Self {
-        Self {
-            type_id: 0,
-            option_id: 0,
-        }
-    }
-}
-
-impl std::fmt::Display for SH3Mob {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "[TypeID: {:#04x}, OptionID: {:#04x}]",
-            self.type_id, self.option_id
-        )
-    }
-}
-
-pub struct SH3MobPercStrings {
-    pub main_str: [String; 13],
-    pub option_one_str: [String; 13],
-    pub option_two_str: [String; 13],
-    pub option_three_str: [String; 13],
-    pub option_four_str: [String; 13],
-}
-
-impl Default for SH3MobPercStrings {
-    fn default() -> Self {
-        Self {
-            main_str: Default::default(),
-            option_one_str: Default::default(),
-            option_two_str: Default::default(),
-            option_three_str: Default::default(),
-            option_four_str: Default::default(),
-        }
-    }
+pub struct SH2Mob {
+    pub type_id: u32,
 }
 
 #[derive(Debug, std::cmp::PartialEq)]
@@ -158,13 +92,19 @@ pub struct MyApp {
     pub sh3_process_id: u32,
     pub bonus_points: u32,
     pub health_drinks: u8,
-    pub sh3_perc_strings: SH3MobPercStrings,
     pub sh3_addresses: SH3Addresses,
     pub sh3_randomizable_type_id: Vec<i32>,
     pub sh3_not_randomizable_gid: Vec<i32>,
     pub sh3_in_game_time: String,
 
     pub sh2_regions: [i32; 59],
+    pub sh2_process_id: u32,
+    pub sh2_prob_map: Vec<SH2Mob>,
+    pub sh2_randomizable_type_id: Vec<i32>,
+    pub sh2_sliders: Vec<SH2MobData>,
+    pub sh2_path: String,
+    pub sh2_exe_name: String,
+    pub sh2_addresses: SH2Addresses,
 }
 
 impl Default for MyApp {
@@ -179,7 +119,6 @@ impl Default for MyApp {
             sh3_process_id: 0,
             bonus_points: 0,
             health_drinks: 0,
-            sh3_perc_strings: SH3MobPercStrings::default(),
             sh3_addresses: SH3Addresses::default(),
             sh3_randomizable_type_id: vec![
                 0x200, 0x201, 0x202, 0x203, 0x204, 0x205, 0x206, 0x20A, 0x20B, 0x211, 0x213, 0x215,
@@ -197,6 +136,13 @@ impl Default for MyApp {
                 0x7B3D80, 0x7B4A58, 0x7B3058, 0x8C9610, 0x8C8C18, 0x8C8AB0, 0x8C8640, 0x8C7218,
                 0x8C6140, 0x8C5648, 0x8C5130,
             ],
+            sh2_process_id: 0,
+            sh2_prob_map: Vec::new(),
+            sh2_randomizable_type_id: vec![0x200, 0x201, 0x202, 0x207, 0x208, 0x20B],
+            sh2_sliders: Vec::new(),
+            sh2_path: Default::default(),
+            sh2_exe_name: Default::default(),
+            sh2_addresses: SH2Addresses::default(),
         }
     }
 }
@@ -204,7 +150,7 @@ impl Default for MyApp {
 impl MyApp {
     pub fn set_sh3_probability(&mut self) {
         self.sh3_prob_map.clear();
-        let total_probabilities: f32 = get_total_probabilities(&self.sh3_sliders) as f32;
+        let total_probabilities: f32 = get_sh3_total_probabilities(&self.sh3_sliders) as f32;
         for item in &mut self.sh3_sliders {
             let mut current_mob_probability: f32 = item.main as f32 / total_probabilities;
             current_mob_probability = f32::trunc(current_mob_probability * 100.0) / 100.0; //to limit to 2 decimal places
@@ -250,18 +196,21 @@ impl MyApp {
                     option_id: item.option_one_id,
                 });
             }
+            #[allow(unused)]
             for i in 0..(option_two_normalized * current_mob_probability) as i32 {
                 self.sh3_prob_map.push(SH3Mob {
                     type_id: item.type_id,
                     option_id: item.option_two_id,
                 });
             }
+            #[allow(unused)]
             for i in 0..(option_three_normalized * current_mob_probability) as i32 {
                 self.sh3_prob_map.push(SH3Mob {
                     type_id: item.type_id,
                     option_id: item.option_three_id,
                 });
             }
+            #[allow(unused)]
             for i in 0..(option_four_normalized * current_mob_probability) as i32 {
                 self.sh3_prob_map.push(SH3Mob {
                     type_id: item.type_id,
@@ -270,11 +219,34 @@ impl MyApp {
             }
         }
         //TODO fixare la mappa
-        self.inject_values();
+        self.sh3_inject_values();
         /*
         for l in 0..self.sh3_prob_map.len(){
             println!("{}", self.sh3_prob_map[l]);
         }*/
+    }
+
+    pub fn set_sh2_probability(&mut self) {
+        self.sh2_prob_map.clear();
+        let total_probabilities: f32 = get_sh2_total_probabilities(&self.sh2_sliders) as f32;
+
+        for item in &mut self.sh2_sliders {
+            let mut current_mob_probability: f32 = item.main as f32 / total_probabilities;
+            current_mob_probability = f32::trunc(current_mob_probability * 100.0) / 100.0; //to limit to 2 decimal places
+            current_mob_probability *= 100.0; //to have a percentage
+
+            //TODO format numbers on 2 digits?
+            item.main_perc_string = current_mob_probability.to_string();
+            item.main_perc_string.push('%');
+
+            #[allow(unused)]
+            for i in 0..current_mob_probability as i32 {
+                self.sh2_prob_map.push(SH2Mob {
+                    type_id: item.type_id,
+                });
+            }
+        }
+        self.sh2_inject_values();
     }
 
     fn can_randomize_gid(&mut self, gid: &i32) -> bool {
@@ -287,7 +259,7 @@ impl MyApp {
         false
     }
 
-    fn inject_values(&mut self) {
+    fn sh3_inject_values(&mut self) {
         let addr: usize = 0x006cf7d0;
         let mut rng = rand::thread_rng();
         let mut ents_addr: usize;
@@ -342,9 +314,66 @@ impl MyApp {
             }
         }
     }
+
+    fn sh2_inject_values(&mut self) {
+        let mut rng = rand::thread_rng();
+        let mut ents_addr: usize;
+        let mut type_id: i32;
+        let mut gid: i32;
+        let mut random_mob: &SH2Mob;
+        let mut first: u32;
+
+        if self.sh2_process_id == 0 {
+            return;
+        }
+        for offset in 1..self.sh2_regions.len() {
+            ents_addr = mem_mgmt::read_u32(
+                self.sh2_process_id,
+                (self.sh2_regions[offset] + 0x10) as usize,
+            ) as usize;
+            if ents_addr == 0 {
+                continue;
+            }
+
+            loop {
+                first = mem_mgmt::read_u16(self.sh2_process_id, ents_addr) as u32;
+                ents_addr += 0x28;
+                if first == 0 {
+                    break;
+                }
+            }
+
+            loop {
+                type_id = mem_mgmt::read_u16(self.sh2_process_id, ents_addr) as i32;
+                gid = mem_mgmt::read_u16(self.sh2_process_id, ents_addr + 0x2) as i32;
+
+                if type_id == 0 {
+                    break;
+                }
+
+                if self.sh2_randomizable_type_id.contains(&&type_id) {
+                    random_mob = self.sh2_prob_map.choose(&mut rng).unwrap();
+
+                    mem_mgmt::write_u16(self.sh2_process_id, ents_addr, random_mob.type_id as u16);
+                }
+
+                ents_addr += 0x14;
+            }
+        }
+    }
 }
 
-fn get_total_probabilities(vcmd: &Vec<SH3MobData>) -> u32 {
+fn get_sh3_total_probabilities(vcmd: &Vec<SH3MobData>) -> u32 {
+    let mut probs: u32 = 0;
+
+    for item in vcmd {
+        probs = probs + item.main as u32;
+    }
+
+    probs
+}
+
+fn get_sh2_total_probabilities(vcmd: &Vec<SH2MobData>) -> u32 {
     let mut probs: u32 = 0;
 
     for item in vcmd {
@@ -367,4 +396,88 @@ pub fn get_time_string(dur: Duration) -> String {
     str.push_str(&seconds.to_string());
 
     str
+}
+
+impl std::fmt::Display for SH3Mob {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "[TypeID: {:#04x}, OptionID: {:#04x}]",
+            self.type_id, self.option_id
+        )
+    }
+}
+
+impl Default for SH2Mob {
+    fn default() -> Self {
+        Self { type_id: 0 }
+    }
+}
+
+impl Default for SH3Mob {
+    fn default() -> Self {
+        Self {
+            type_id: 0,
+            option_id: 0,
+        }
+    }
+}
+
+impl Default for SH3MobData {
+    fn default() -> Self {
+        Self {
+            main: 0,
+            option_one: 0,
+            option_two: 0,
+            option_three: 0,
+            option_four: 0,
+
+            main_name: "".to_owned(),
+            option_one_name: "".to_owned(),
+            option_two_name: "".to_owned(),
+            option_three_name: "".to_owned(),
+            option_four_name: "".to_owned(),
+
+            main_perc: 1.0,
+            option_one_perc: 1.0,
+            option_two_perc: 0.0,
+            option_three_perc: 0.0,
+            option_four_perc: 0.0,
+
+            main_perc_string: "".to_owned(),
+            option_one_perc_string: "".to_owned(),
+            option_two_perc_string: "".to_owned(),
+            option_three_perc_string: "".to_owned(),
+            option_four_perc_string: "".to_owned(),
+
+            type_id: 0,
+            option_one_id: 0,
+            option_two_id: 0,
+            option_three_id: 0,
+            option_four_id: 0,
+        }
+    }
+}
+
+impl SH3MobData {
+    pub fn main_mut(&mut self) -> &mut i32 {
+        &mut self.main
+    }
+}
+
+impl Default for SH2MobData {
+    fn default() -> Self {
+        Self {
+            main: 0,
+            main_name: Default::default(),
+            main_perc_string: Default::default(),
+            type_id: 0,
+        }
+    }
+}
+
+impl Default for SH2Addresses {
+    fn default() -> Self {
+        Self { rng_seed: 0 }
+    }
 }

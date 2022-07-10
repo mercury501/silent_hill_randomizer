@@ -35,14 +35,14 @@ impl data_structs::MyApp {
         ui.separator();
 
         match self.selected_tab {
-            data_structs::Tabs::SH3Probabilities => self.probs_ui(ui, frame),
-            data_structs::Tabs::SH3InfoItems => self.info_ui(ui),
-            data_structs::Tabs::SH2Probabilities => self.probs_ui(ui, frame), //TODO change for sh2
-            data_structs::Tabs::SH2InfoItems => self.info_ui(ui),
+            data_structs::Tabs::SH3Probabilities => self.sh3_probs_ui(ui, frame),
+            data_structs::Tabs::SH3InfoItems => self.sh3_info_ui(ui),
+            data_structs::Tabs::SH2Probabilities => self.sh2_probs_ui(ui, frame), //TODO change for sh2
+            data_structs::Tabs::SH2InfoItems => self.sh2_info_ui(ui),
         }
     }
 
-    fn probs_ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+    fn sh3_probs_ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
         let mut index = 0;
         ui.vertical(|ui| {
             ui.horizontal(|ui| {
@@ -466,7 +466,7 @@ impl data_structs::MyApp {
         });
     }
 
-    fn info_ui(&mut self, ui: &mut egui::Ui) {
+    fn sh3_info_ui(&mut self, ui: &mut egui::Ui) {
         ui.horizontal(|ui| {
             ui.vertical(|ui| {
                 ui.vertical(|ui| {
@@ -518,44 +518,113 @@ impl data_structs::MyApp {
         });
     }
 
-    pub fn bottom_ui(&mut self, ui: &mut egui::Ui) {
-        ui.horizontal(|ui| {
-            if ui.button("Update Probs").clicked() {
-                self.set_sh3_probability();
-            }
+    fn sh2_probs_ui(&mut self, ui: &mut egui::Ui, _frame: &mut eframe::Frame) {
+        let mut index = 0;
+        ui.vertical(|ui| {
+            ui.horizontal(|ui| {
+                ui.vertical(|ui| {
+                    //lying_figure
+                    ui.label(self.sh2_sliders[index].main_name.to_string());
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh2_sliders[index].main,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh2_sliders[index].main_perc_string);
+                    });
 
-            if ui.button("Find SH3").clicked() {
-                if let Some(path) = FileDialog::new()
-                    .add_filter("Executable", &["exe"])
-                    .pick_file()
-                {
-                    self.sh3_exe_name = path.file_name().unwrap().to_str().unwrap().to_owned();
-                    self.sh3_path = path.display().to_string();
-                }
-            }
+                    index += 1;
 
-            if ui.button("Click to start SH3").clicked() {
-                mem_mgmt::kill_process(self.sh3_process_id);//TODO doesn't kill
+                    //nurse
+                    ui.label(self.sh2_sliders[index].main_name.to_string());
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh2_sliders[index].main,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh2_sliders[index].main_perc_string);
+                    });
 
-                let sh3_process = Command::new(&self.sh3_path)
-                    .spawn()
-                    .expect("failed to execute process");
+                    index += 1;
 
-                self.sh3_process_id = sh3_process.id();
-            }
+                    //mannequin
+                    ui.label(self.sh2_sliders[index].main_name.to_string());
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh2_sliders[index].main,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh2_sliders[index].main_perc_string);
+                    });
+
+                    index += 1;
+
+                    //dark_nurse
+                    ui.label(self.sh2_sliders[index].main_name.to_string());
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh2_sliders[index].main,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh2_sliders[index].main_perc_string);
+                    });
+
+                    index += 1;
+
+                    //creeper
+                    ui.label(self.sh2_sliders[index].main_name.to_string());
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh2_sliders[index].main,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh2_sliders[index].main_perc_string);
+                    });
+
+                    index += 1;
+
+                    //pyramid_head
+                    ui.label(self.sh2_sliders[index].main_name.to_string());
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh2_sliders[index].main,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh2_sliders[index].main_perc_string);
+                    });
+
+                    ui.label(&self.sh2_path);
+                });
+            });
         });
     }
 
+    fn sh2_info_ui(&mut self, ui: &mut egui::Ui) {
+        ui.horizontal(|ui| {
+            ui.vertical(|ui| {
+                    ui.horizontal(|ui| {
+                        ui.label("RNG Seed: ");
+                        let rng_seed = mem_mgmt::read_u32(
+                            self.sh2_process_id,
+                            self.sh2_addresses.rng_seed as usize,
+                        );
+                        ui.label(rng_seed.to_string());
+                    });
+            });
+        });
+    }
+
+    // bottom uis
     pub fn main_bottom_ui(&mut self, ui: &mut egui::Ui, frame: eframe::egui::Frame) {
         match self.selected_tab {
-            data_structs::Tabs::SH3Probabilities => self.bottom_probs_ui(ui, frame),
-            data_structs::Tabs::SH3InfoItems => self.bottom_info_ui(ui, frame),
-            data_structs::Tabs::SH2Probabilities => self.bottom_probs_ui(ui, frame), //TODO change for sh2
-            data_structs::Tabs::SH2InfoItems => self.bottom_info_ui(ui, frame),
+            data_structs::Tabs::SH3Probabilities => self.bottom_sh3_probs_ui(ui, frame),
+            data_structs::Tabs::SH3InfoItems => self.bottom_sh3_info_ui(ui, frame),
+            data_structs::Tabs::SH2Probabilities => self.bottom_sh2_probs_ui(ui, frame), //TODO change for sh2
+            data_structs::Tabs::SH2InfoItems => self.bottom_sh2_info_ui(ui, frame),
         }
     }
 
-    pub fn bottom_probs_ui(&mut self, ui: &mut egui::Ui, _frame: eframe::egui::Frame) {
+    pub fn bottom_sh3_probs_ui(&mut self, ui: &mut egui::Ui, _frame: eframe::egui::Frame) {
         ui.horizontal(|ui| {
             if ui.button("Update Probs").clicked() {
                 self.set_sh3_probability();
@@ -572,6 +641,9 @@ impl data_structs::MyApp {
             }
 
             if ui.button("Click to start SH3").clicked() {
+                if self.sh3_path.eq(&"".to_string()) {
+                    return
+                }
                 let sh3_process = Command::new(&self.sh3_path)
                     .spawn()
                     .expect("failed to execute process");
@@ -581,9 +653,44 @@ impl data_structs::MyApp {
         });
     }
 
-    pub fn bottom_info_ui(&mut self, ui: &mut egui::Ui, frame: eframe::egui::Frame) {
+    pub fn bottom_sh3_info_ui(&mut self, ui: &mut egui::Ui, frame: eframe::egui::Frame) {
         ui.horizontal(|ui| {
             ui.label(format!("The SH3 exe path: {}", self.sh3_path));
         });
+    }
+
+    pub fn bottom_sh2_probs_ui(&mut self, ui: &mut egui::Ui, _frame: eframe::egui::Frame) {
+        ui.horizontal(|ui| {
+            if ui.button("Update Probs").clicked() {
+                self.set_sh2_probability();
+            }
+
+            if ui.button("Find SH2").clicked() {
+                if let Some(path) = FileDialog::new()
+                    .add_filter("Executable", &["exe"])
+                    .pick_file()
+                {
+                    self.sh2_exe_name = path.file_name().unwrap().to_str().unwrap().to_owned();
+                    self.sh2_path = path.display().to_string();
+                }
+            }
+
+            if ui.button("Click to start SH2").clicked() {
+                if self.sh2_path.eq(&"".to_string()) {
+                    return
+                }
+                let sh2_process = Command::new(&self.sh2_path)
+                    .spawn()
+                    .expect("failed to execute process");
+
+                self.sh2_process_id = sh2_process.id();
+            }
+        });
+    }
+
+    pub fn bottom_sh2_info_ui(&mut self, ui: &mut egui::Ui, frame: eframe::egui::Frame) {
+        ui.horizontal(|ui| {
+                ui.label(format!("The SH2 exe path: {}", self.sh2_path));
+            });
     }
 }

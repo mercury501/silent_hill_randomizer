@@ -384,29 +384,65 @@ impl data_structs::MyApp {
 		self.sh3_sliders.push(alessa);
 		self.sh3_sliders.push(god);
 
-		//temp TODO
-		for string in &mut self.sh3_perc_strings.main_str{
-			string.clear();
-			string.push_str(&"20%".to_string());
-		}
-		for string in &mut self.sh3_perc_strings.option_one_str{
-			string.clear();
-			string.push_str(&"20%".to_string());
-		}
-		for string in &mut self.sh3_perc_strings.option_two_str{
-			string.clear();
-			string.push_str(&"20%".to_string());
-		}
-		for string in &mut self.sh3_perc_strings.option_three_str{
-			string.clear();
-			string.push_str(&"20%".to_string());
-		}
-		for string in &mut self.sh3_perc_strings.option_four_str{
-			string.clear();
-			string.push_str(&"20%".to_string());
-		}
-
-
 		self.set_sh3_probability();
+
+		//Silent Hill 2
+		#[allow(unused_mut)]
+		let mut lying_figure = data_structs::SH2MobData {
+			main: 100,
+			main_name: "Lying Figure".to_string(),
+			main_perc_string: Default::default(),
+			type_id: 0x200,
+		};
+
+		#[allow(unused_mut)]
+		let mut nurse = data_structs::SH2MobData {
+			main: 100,
+			main_name: "Nurse".to_string(),
+			main_perc_string: Default::default(),
+			type_id: 0x207,
+		};
+
+		#[allow(unused_mut)]
+		let mut mannequin = data_structs::SH2MobData {
+			main: 100,
+			main_name: "Mannequin".to_string(),
+			main_perc_string: Default::default(),
+			type_id: 0x201,
+		};
+
+		#[allow(unused_mut)]
+		let mut dark_nurse = data_structs::SH2MobData {
+			main: 100,
+			main_name: "Dark Nurse".to_string(),
+			main_perc_string: Default::default(),
+			type_id: 0x20B,
+		};
+
+		#[allow(unused_mut)]
+		let mut creeper = data_structs::SH2MobData {
+			main: 100,
+			main_name: "Creeper".to_string(),
+			main_perc_string: Default::default(),
+			type_id: 0x202,
+		};
+
+		#[allow(unused_mut)]
+		let mut pyramid_head = data_structs::SH2MobData {
+			main: 100,
+			main_name: "Pyramid Head".to_string(),
+			main_perc_string: Default::default(),
+			type_id: 0x208,
+		};
+
+		self.sh2_sliders.push(lying_figure);
+		self.sh2_sliders.push(nurse);
+		self.sh2_sliders.push(mannequin);
+		self.sh2_sliders.push(dark_nurse);
+		self.sh2_sliders.push(creeper);
+		self.sh2_sliders.push(pyramid_head);
+
+		self.set_sh2_probability();
+
 	}
 }
