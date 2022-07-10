@@ -219,13 +219,17 @@ impl MyApp {
                 item.option_three as f32 / current_mob_total_options_probability as f32;
             let option_four_normalized: f32 =
                 item.option_four as f32 / current_mob_total_options_probability as f32;
-            /*
+            
 			item.main_perc_string = current_mob_probability.to_string();
+			item.main_perc_string.push('%');
 			item.option_one_perc_string = option_one_normalized.to_string();
+			item.option_one_perc_string.push('%');
 			item.option_two_perc_string = option_two_normalized.to_string();
+			item.option_two_perc_string.push('%');
 			item.option_three_perc_string = option_three_normalized.to_string();
+			item.option_three_perc_string.push('%');
 			item.option_four_perc_string = option_four_normalized.to_string();
-            */
+            item.option_four_perc_string.push('%');
             /*
 			println!("Current mob: {}, percs: {}, {}, {}\n" , item.main_name, current_mob_probability.to_string() ,
 				option_one_normalized.to_string() , option_two_normalized.to_string());
