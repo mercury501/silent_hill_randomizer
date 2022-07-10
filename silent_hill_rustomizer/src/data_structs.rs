@@ -181,21 +181,20 @@ impl Default for MyApp {
 
 impl MyApp {
     pub fn set_probability(&mut self) {
-		let total_probabilities: f32 = get_total_probabilities(&self.sh3_sliders) as f32;
+		self.sh3_prob_map.clear();
+        let total_probabilities: f32 = get_total_probabilities(&self.sh3_sliders) as f32;
         for item in &mut self.sh3_sliders {
 
             let mut current_mob_probability: f32 = item.main as f32 / total_probabilities;
             current_mob_probability = f32::trunc(current_mob_probability * 100.0) / 100.0; //to limit to 2 decimal places
             current_mob_probability *= 100.0; //to have a percentage
 
-            let mut current_mob_total_options_probability: i32 =
+            let current_mob_total_options_probability: i32 =
                 item.option_one + item.option_two + item.option_three + item.option_four;
-
-            /*    
+  
             if current_mob_total_options_probability == 0 {
-                item.option_one = 100;
-                current_mob_total_options_probability = 100;
-             }*/
+                continue
+             }
 			
             let option_one_normalized: f32 =
                 item.option_one as f32 / current_mob_total_options_probability as f32;
@@ -219,39 +218,38 @@ impl MyApp {
 					item.option_three_perc_string, item.option_four_perc_string);
             */
             #[allow(unused)]
-            for n in 0..current_mob_probability as u32 {//TODO test
-                for i in 0..option_one_normalized as i32 {
+                for i in 0..(option_one_normalized * current_mob_probability) as i32 {
                     self.sh3_prob_map.push(SH3Mob {
                         type_id: item.type_id,
                         option_id: item.option_one_id,
                     });
                 }
-                for i in 0..option_two_normalized as i32 {
+                for i in 0..(option_two_normalized * current_mob_probability) as i32 {
                     self.sh3_prob_map.push(SH3Mob {
                         type_id: item.type_id,
                         option_id: item.option_two_id,
                     });
                 }
-                for i in 0..option_three_normalized as i32 {
+                for i in 0..(option_three_normalized * current_mob_probability) as i32 {
                     self.sh3_prob_map.push(SH3Mob {
                         type_id: item.type_id,
                         option_id: item.option_three_id,
                     });
                 }
-                for i in 0..option_four_normalized as i32 {
+                for i in 0..(option_four_normalized * current_mob_probability) as i32 {
                     self.sh3_prob_map.push(SH3Mob {
                         type_id: item.type_id,
                         option_id: item.option_four_id,
                     });
                 }
-            }
+            
         }
         //TODO fixare la mappa
 		self.inject_values();
-        
+        /*
         for l in 0..self.sh3_prob_map.len(){
             println!("{}", self.sh3_prob_map[l]);
-        }
+        }*/
     }
 
 	fn can_randomize_gid(&mut self, gid: &i32) -> bool{
@@ -279,12 +277,12 @@ impl MyApp {
 		for offset in 0..40 {
 				ptr_addr = mem_mgmt::read_u32(self.sh3_process_id, addr + (offset * 4)) as usize;
 				if ptr_addr == 0{
-					continue;
+					continue
 				}
 
 				ents_addr = mem_mgmt::read_u32(self.sh3_process_id, ptr_addr + 16) as usize;
 				if ents_addr == 0{
-					continue;
+					continue
 				}
 
 				loop {//TODO test
@@ -292,14 +290,14 @@ impl MyApp {
 					gid = mem_mgmt::read_u16(self.sh3_process_id, ents_addr + 2) as i32;
 
 					if type_id == 0{
-						break;
+						break
 					}
 
 					if (self.sh3_randomizable_type_id.contains(&type_id) && self.can_randomize_gid(&gid)){
 						random_mob = self.sh3_prob_map.choose(&mut rng).unwrap();
                         println!("Writing id {:#04x}, opt {:#04x}", random_mob.type_id, random_mob.option_id);
-						mem_mgmt::write_u32(self.sh3_process_id, ents_addr, random_mob.type_id as u64);
-						mem_mgmt::write_u32(self.sh3_process_id, ents_addr + 0x16, random_mob.option_id as u64);
+						mem_mgmt::write_u16(self.sh3_process_id, ents_addr, random_mob.type_id as u16);
+						mem_mgmt::write_u16(self.sh3_process_id, ents_addr + 0x16, random_mob.option_id as u16);
 					}
 
 					ents_addr += 0x18;

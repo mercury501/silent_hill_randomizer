@@ -398,10 +398,10 @@ impl data_structs::MyApp {
                         mem_mgmt::read_u8(self.sh3_process_id, self.sh3_addresses.health_drinks);
                     current_drinks += 5;
                     if !(current_drinks >= 255) {
-                        mem_mgmt::write_u32(
+                        mem_mgmt::write_u8(
                             self.sh3_process_id,
                             self.sh3_addresses.health_drinks,
-                            current_drinks as u64,
+                            current_drinks as u8,
                         );
                     }
                 }

@@ -1,13 +1,19 @@
 use vmemory::{self, ProcessMemory};
 use byteorder::{ByteOrder, LittleEndian};
 
-pub fn write_u32(proc_id: u32, addr:usize, data: u64){
+pub fn write_u16(proc_id: u32, addr:usize, data: u16){
     let vec: Vec<u8> = data.to_le_bytes().to_vec();
 
     write_u8_arr(proc_id, addr, &vec);
 }
 
-fn write_u8_arr(proc_id: u32, addr: usize, data: &Vec<u8>){
+pub fn write_u8(proc_id: u32, addr:usize, data: u8){
+    let vec: Vec<u8> = vec![data];
+
+    write_u8_arr(proc_id, addr, &vec);
+}
+
+fn write_u8_arr(proc_id: u32, addr: usize, data: &Vec<u8>){ 
     let attached_proc: ProcessMemory;
 
     match ProcessMemory::attach_process(proc_id){
