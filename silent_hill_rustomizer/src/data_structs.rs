@@ -1,10 +1,12 @@
 use crate::mem_mgmt;
+use chrono::Duration;
 use rand::prelude::SliceRandom;
 
 pub struct SH3Addresses {
     pub high_score: usize,    
     pub health_drinks: usize, 
-    pub bonus_points: usize,  
+    pub bonus_points: usize,
+    pub in_game_time: usize,  
 }
 
 impl Default for SH3Addresses {
@@ -13,6 +15,7 @@ impl Default for SH3Addresses {
             high_score: 0x070E66F0, 	//i32
             health_drinks: 0x0712CAB2, 	//u8
             bonus_points: 0x0712C59C, 	//f32
+            in_game_time: 0x070E66F4,   //f32, in seconds
         }
     }
 }
@@ -145,11 +148,12 @@ pub enum Tabs {
 
 pub struct MyApp {
     pub selected_tab: Tabs,
+
     pub sh3_path: String,
     pub sh3_exe_name: String,
     pub sh3_prob_map: Vec<SH3Mob>,
     pub sh3_sliders: Vec<SH3MobData>,
-    pub high_score: i32,
+    pub sh3_high_score: i32,
     pub sh3_process_id: u32,
     pub bonus_points: u32,
     pub health_drinks: u8,
@@ -157,6 +161,9 @@ pub struct MyApp {
 	pub sh3_addresses: SH3Addresses,
 	pub sh3_randomizable_type_id: Vec<i32>,
 	pub sh3_not_randomizable_gid: Vec<i32>,
+    pub sh3_in_game_time: String,
+
+    pub sh2_regions: [i32; 59],
 }
 
 impl Default for MyApp {
@@ -167,7 +174,7 @@ impl Default for MyApp {
             sh3_exe_name: "sh3.exe".to_owned(),
             sh3_prob_map: Vec::new(),
             sh3_sliders: Vec::new(),
-            high_score: 0,
+            sh3_high_score: 0,
             sh3_process_id: 0,
             bonus_points: 0,
             health_drinks: 0,
@@ -175,6 +182,14 @@ impl Default for MyApp {
 			sh3_addresses: SH3Addresses::default(),
 			sh3_randomizable_type_id: vec![0x200, 0x201, 0x202, 0x203, 0x204, 0x205, 0x206, 0x20A, 0x20B, 0x211, 0x213, 0x215],
 			sh3_not_randomizable_gid: vec![17, 240, 310, 397],
+            sh3_in_game_time: Default::default(),
+
+            sh2_regions: [0x0, 0x8F18A0, 0x8EAB50, 0x8EA718, 0x8EA208, 0x8EA208, 0x8E65D0, 0x8E5A58, 0x8E41A8, 0x8E3AC0,
+            0x8E30F8, 0x8E2708, 0x8E1F08, 0x8E1698, 0x8E08F0, 0x8DD888, 0x8DD380, 0x8DD238, 0x8DCD48, 0x8DC180,
+            0x8DB288, 0x8DA7D0, 0x8D9D68, 0x8D9798, 0x8D9218, 0x8D8CA8, 0x8D8130, 0x8D7870, 0x8D7620, 0x8D7318,
+            0x8D6ED8, 0x8D61E8, 0x8D5408, 0x8D4918, 0x8D4140, 0x8D2F00, 0x8D1FA8, 0x8CFCC8, 0x8CF618, 0x8CF310,
+            0x8CE9C8, 0x8CD0A0, 0x8CBE78, 0x8CB8F0, 0x8CAEC8, 0x8CA668, 0x8C9ED0, 0x8C9A58, 0x7B3D80, 0x7B4A58,
+            0x7B3058, 0x8C9610, 0x8C8C18, 0x8C8AB0, 0x8C8640, 0x8C7218, 0x8C6140, 0x8C5648, 0x8C5130],
         }
     }
 }
@@ -318,4 +333,21 @@ fn get_total_probabilities(vcmd: &Vec<SH3MobData>) -> u32 {
     }
 
     probs
+}
+
+pub fn get_time_string(dur: Duration) -> String {
+    let mut str: String = Default::default();
+    let hours: i64 = dur.num_hours();
+    let minutes: i64 = dur.num_minutes() - (hours * 60);
+    let seconds: i64 = dur.num_seconds() - (((hours * 60) + minutes) * 60);
+
+
+
+    str.push_str(&hours.to_string());
+    str.push(':');
+    str.push_str(&minutes.to_string());
+    str.push(':');
+    str.push_str(&seconds.to_string());
+
+    str
 }

@@ -1,6 +1,8 @@
 use crate::data_structs;
+use crate::data_structs::get_time_string;
 use crate::egui;
 use crate::mem_mgmt;
+use chrono::Duration;
 use rfd::FileDialog;
 use std::process::Command;
 
@@ -375,14 +377,18 @@ impl data_structs::MyApp {
                 });
                 ui.vertical(|ui| {
                     ui.label("High Score: ");
-                    ui.label(self.high_score.to_string());
+                    ui.label(self.sh3_high_score.to_string());
                 });
                 ui.vertical(|ui| {
                     ui.label("Bonus Points: ");
                     ui.label(self.bonus_points.to_string());
                 });
+                ui.vertical(|ui| {
+                    ui.label("In Game Time: ");
+                    ui.label(self.sh3_in_game_time.to_string());
+                });
                 if ui.button("Update Values").clicked() {
-                    self.high_score =
+                    self.sh3_high_score =
                         mem_mgmt::read_u32(self.sh3_process_id, self.sh3_addresses.high_score)
                             as i32;
                     self.bonus_points =
@@ -390,6 +396,8 @@ impl data_structs::MyApp {
                             as u32;
                     self.health_drinks =
                         mem_mgmt::read_u8(self.sh3_process_id, self.sh3_addresses.health_drinks);
+                    let sh3_igt = Duration::seconds(mem_mgmt::read_f32(self.sh3_process_id, self.sh3_addresses.in_game_time) as i64);                         
+                    self.sh3_in_game_time = get_time_string(sh3_igt);
                 }
             });
             ui.vertical(|ui| {
