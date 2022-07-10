@@ -220,6 +220,7 @@ impl MyApp {
             let option_four_normalized: f32 =
                 item.option_four as f32 / current_mob_total_options_probability as f32;
             
+			//TODO format numbers on 2 digits?
 			item.main_perc_string = current_mob_probability.to_string();
 			item.main_perc_string.push('%');
 			item.option_one_perc_string = option_one_normalized.to_string();

@@ -49,257 +49,331 @@ impl data_structs::MyApp {
                 ui.vertical(|ui| {
                     //nurse
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_one_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_one,
-                        0..=100,
-                    ));
-
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_one,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_one_perc_string);
+                    });
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_two_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_two,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_two,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_two_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_three_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_three,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_three,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_three_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_four_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_four,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_four,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_four_perc_string);
+                    });
 
                     index += 1;
 
                     //pendulum
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
-
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_one_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_one,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_one,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_one_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_two_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_two,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_two,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_two_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_three_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_three,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_three,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_three_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_four_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_four,
-                        0..=100,
-                    ));
-
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_four,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_four_perc_string);
+                    });
                     index += 1;
 
                     //closer
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_one_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_one,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_one,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_one_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_two_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_two,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_two,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_two_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_three_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_three,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_three,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_three_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_four_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_four,
-                        0..=100,
-                    ));
-
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_four,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_four_perc_string);
+                    });
                 });
 
                 index += 1;
                 ui.vertical(|ui| {
                     //numb_body
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_one_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_one,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_one,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_one_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_two_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_two,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_two,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_two_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_three_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_three,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_three,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_three_perc_string);
+                    });
 
                     index += 1;
 
                     //brown_slurper
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_one_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_one,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_one,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_one_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_two_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_two,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_two,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_two_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_three_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_three,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_three,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_three_perc_string);
+                    });
 
                     index += 1;
 
                     //insane_cancer
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_one_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_one,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_one,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_one_perc_string);
+                    });
 
                     ui.label(
                         self.sh3_sliders[index].main_name.to_string()
                             + " - "
                             + &self.sh3_sliders[index].option_two_name.to_string(),
                     );
-                    ui.add(egui::Slider::new(
-                        &mut self.sh3_sliders[index].option_two,
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            &mut self.sh3_sliders[index].option_two,
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].option_two_perc_string);
+                    });
 
                     index += 1;
                 });
@@ -307,64 +381,85 @@ impl data_structs::MyApp {
                     //one option
                     //dog
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
 
                     index += 1;
 
                     //white_slurper
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
 
                     index += 1;
 
                     //scraper
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
 
                     index += 1;
 
                     //missionary
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
 
                     index += 1;
 
                     //leonard
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
 
                     index += 1;
 
                     //alessa
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
 
                     index += 1;
 
                     //god
                     ui.label(self.sh3_sliders[index].main_name.to_string());
-                    ui.add(egui::Slider::new(
-                        self.sh3_sliders[index].main_mut(),
-                        0..=100,
-                    ));
+                    ui.horizontal(|ui| {
+                        ui.add(egui::Slider::new(
+                            self.sh3_sliders[index].main_mut(),
+                            0..=100,
+                        ));
+                        ui.label(&self.sh3_sliders[index].main_perc_string);
+                    });
                 });
             });
             ui.label(format!("SH3 exe path: {}", self.sh3_path));
