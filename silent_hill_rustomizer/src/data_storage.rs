@@ -407,6 +407,6 @@ impl data_structs::MyApp {
 		}
 
 
-		self.set_probability();
+		self.set_sh3_probability();
 	}
 }

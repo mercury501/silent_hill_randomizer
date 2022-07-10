@@ -122,3 +122,14 @@ fn vec_to_u16_le_wrapper(vect: &Vec<u8>) -> u16{
 
 	LittleEndian::read_u16(&arr)
 }
+
+pub fn kill_process(proc_id: u32){
+	let attached_proc: ProcessMemory;
+
+	match ProcessMemory::attach_process(proc_id){
+		Some(p) => attached_proc = p,
+		None => return,
+	}
+
+	attached_proc.kill();
+}
