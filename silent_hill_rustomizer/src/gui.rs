@@ -4,9 +4,8 @@ use crate::egui;
 use crate::mem_mgmt;
 use chrono::Duration;
 use rfd::FileDialog;
-use vmemory::ProcessMemory;
 use std::process::Command;
-use sysinfo::{ProcessExt, System, SystemExt, Pid, PidExt}; 
+
 
 impl data_structs::MyApp {
     pub fn main_ui(&mut self, ui: &mut egui::Ui, frame: &mut eframe::Frame) {
@@ -663,26 +662,9 @@ impl data_structs::MyApp {
     pub fn bottom_sh2_probs_ui(&mut self, ui: &mut egui::Ui, _frame: eframe::egui::Frame) {
         ui.horizontal(|ui| {
             if ui.button("Update Probs").clicked() {
-                self.set_sh2_probability();
+                self.set_sh2_probability(true);
             }
 
-            if ui.button("Find SH2").clicked() {
-                if let Some(path) = FileDialog::new()
-                    .add_filter("Executable", &["exe"])
-                    .pick_file()
-                {
-                    self.sh2_exe_name = path.file_name().unwrap().to_str().unwrap().to_owned();
-                }
-            }
-
-            if ui.button("Click to hook SH2").clicked() {
-                let ss = System::new_all();
-
-                let sh2_processes = ss.processes_by_exact_name("sh2pc.exe");
-                for val in sh2_processes {
-                    self.sh2_process_id = val.pid().as_u32();
-                }
-            }
         });
     }
 

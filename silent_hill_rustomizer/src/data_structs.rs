@@ -1,7 +1,7 @@
 use crate::mem_mgmt;
 use chrono::Duration;
 use rand::prelude::SliceRandom;
-use vmemory::ProcessMemory;
+use sysinfo::{Pid, PidExt, ProcessExt, System, SystemExt};
 
 pub struct SH3Addresses {
     pub high_score: usize,
@@ -173,13 +173,13 @@ impl MyApp {
             //TODO format numbers on 2 digits?
             item.main_perc_string = current_mob_probability.to_string();
             item.main_perc_string.push('%');
-            item.option_one_perc_string = option_one_normalized.to_string();
+            item.option_one_perc_string = (option_one_normalized * 100.0).to_string();
             item.option_one_perc_string.push('%');
-            item.option_two_perc_string = option_two_normalized.to_string();
+            item.option_two_perc_string = (option_two_normalized * 100.0).to_string();
             item.option_two_perc_string.push('%');
-            item.option_three_perc_string = option_three_normalized.to_string();
+            item.option_three_perc_string = (option_three_normalized * 100.0).to_string();
             item.option_three_perc_string.push('%');
-            item.option_four_perc_string = option_four_normalized.to_string();
+            item.option_four_perc_string = (option_four_normalized * 100.0).to_string();
             item.option_four_perc_string.push('%');
             /*
             println!("Current mob: {}, percs: {}, {}, {}\n" , item.main_name, current_mob_probability.to_string() ,
@@ -224,8 +224,18 @@ impl MyApp {
         }*/
     }
 
-    pub fn set_sh2_probability(&mut self) {
+    pub fn set_sh2_probability(&mut self, inject: bool) {
         self.sh2_prob_map.clear();
+
+        let ss = System::new_all();
+
+        let sh2_processes = ss.processes_by_exact_name("sh2pc.exe");
+        if inject {
+            for val in sh2_processes {
+                self.sh2_process_id = val.pid().as_u32();
+            }
+        }
+
         let total_probabilities: f32 = get_sh2_total_probabilities(&self.sh2_sliders) as f32;
 
         for item in &mut self.sh2_sliders {
@@ -326,9 +336,11 @@ impl MyApp {
         }
         for offset in 1..self.sh2_regions.len() {
             ents_addr = mem_mgmt::read_u32(
+                //here ents_addr returns a huge value, not an address
                 self.sh2_process_id,
                 (self.sh2_regions[offset] + 0x10) as usize,
             ) as usize;
+
             if ents_addr == 0 {
                 continue;
             }
