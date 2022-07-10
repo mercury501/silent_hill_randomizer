@@ -295,7 +295,10 @@ impl MyApp {
 
 					if (self.sh3_randomizable_type_id.contains(&type_id) && self.can_randomize_gid(&gid)){
 						random_mob = self.sh3_prob_map.choose(&mut rng).unwrap();
+                        
+                        #[cfg(debug_assertions)]
                         println!("Writing id {:#04x}, opt {:#04x}", random_mob.type_id, random_mob.option_id);
+
 						mem_mgmt::write_u16(self.sh3_process_id, ents_addr, random_mob.type_id as u16);
 						mem_mgmt::write_u16(self.sh3_process_id, ents_addr + 0x16, random_mob.option_id as u16);
 					}
