@@ -102,7 +102,6 @@ pub struct MyApp {
     pub sh2_prob_map: Vec<SH2Mob>,
     pub sh2_randomizable_type_id: Vec<i32>,
     pub sh2_sliders: Vec<SH2MobData>,
-    pub sh2_path: String,
     pub sh2_exe_name: String,
     pub sh2_addresses: SH2Addresses,
 }
@@ -140,7 +139,6 @@ impl Default for MyApp {
             sh2_prob_map: Vec::new(),
             sh2_randomizable_type_id: vec![0x200, 0x201, 0x202, 0x207, 0x208, 0x20B],
             sh2_sliders: Vec::new(),
-            sh2_path: Default::default(),
             sh2_exe_name: Default::default(),
             sh2_addresses: SH2Addresses::default(),
         }

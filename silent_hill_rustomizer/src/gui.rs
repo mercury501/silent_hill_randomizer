@@ -4,7 +4,9 @@ use crate::egui;
 use crate::mem_mgmt;
 use chrono::Duration;
 use rfd::FileDialog;
+use vmemory::ProcessMemory;
 use std::process::Command;
+use sysinfo::{ProcessExt, System, SystemExt, Pid, PidExt}; 
 
 impl data_structs::MyApp {
     pub fn main_ui(&mut self, ui: &mut egui::Ui, frame: &mut eframe::Frame) {
@@ -593,7 +595,6 @@ impl data_structs::MyApp {
                         ui.label(&self.sh2_sliders[index].main_perc_string);
                     });
 
-                    ui.label(&self.sh2_path);
                 });
             });
         });
@@ -671,26 +672,23 @@ impl data_structs::MyApp {
                     .pick_file()
                 {
                     self.sh2_exe_name = path.file_name().unwrap().to_str().unwrap().to_owned();
-                    self.sh2_path = path.display().to_string();
                 }
             }
 
-            if ui.button("Click to start SH2").clicked() {
-                if self.sh2_path.eq(&"".to_string()) {
-                    return
-                }
-                let sh2_process = Command::new(&self.sh2_path)
-                    .spawn()
-                    .expect("failed to execute process");
+            if ui.button("Click to hook SH2").clicked() {
+                let ss = System::new_all();
 
-                self.sh2_process_id = sh2_process.id();
+                let sh2_processes = ss.processes_by_exact_name("sh2pc.exe");
+                for val in sh2_processes {
+                    self.sh2_process_id = val.pid().as_u32();
+                }
             }
         });
     }
 
     pub fn bottom_sh2_info_ui(&mut self, ui: &mut egui::Ui, frame: eframe::egui::Frame) {
         ui.horizontal(|ui| {
-                ui.label(format!("The SH2 exe path: {}", self.sh2_path));
+                
             });
     }
 }
