@@ -45,12 +45,6 @@ pub struct SH3MobData {
     pub option_three_name: String,
     pub option_four_name: String,
 
-    pub main_perc: f32,
-    pub option_one_perc: f32,
-    pub option_two_perc: f32,
-    pub option_three_perc: f32,
-    pub option_four_perc: f32,
-
     pub main_perc_string: String,
     pub option_one_perc_string: String,
     pub option_two_perc_string: String,
@@ -447,12 +441,6 @@ impl Default for SH3MobData {
             option_two_name: "".to_owned(),
             option_three_name: "".to_owned(),
             option_four_name: "".to_owned(),
-
-            main_perc: 1.0,
-            option_one_perc: 1.0,
-            option_two_perc: 0.0,
-            option_three_perc: 0.0,
-            option_four_perc: 0.0,
 
             main_perc_string: "".to_owned(),
             option_one_perc_string: "".to_owned(),
