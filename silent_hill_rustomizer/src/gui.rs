@@ -20,7 +20,7 @@ impl data_structs::MyApp {
                 data_structs::Tabs::SH3InfoItems,
                 "SH3 Info - Items",
             );
-
+            /* hidden sh2 until it works
             ui.selectable_value(
                 &mut self.selected_tab,
                 data_structs::Tabs::SH2Probabilities,
@@ -31,6 +31,7 @@ impl data_structs::MyApp {
                 data_structs::Tabs::SH2InfoItems,
                 "SH2 Info - Items",
             );
+            */
         });
 
         ui.separator();
