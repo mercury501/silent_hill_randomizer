@@ -8,6 +8,7 @@ pub struct SH3Addresses {
     pub health_drinks: usize,
     pub bonus_points: usize,
     pub in_game_time: usize,
+    pub visualize_fog: usize,
 }
 
 impl Default for SH3Addresses {
@@ -17,6 +18,7 @@ impl Default for SH3Addresses {
             health_drinks: 0x0712CAB2, //u8
             bonus_points: 0x0712C59C,  //f32
             in_game_time: 0x070E66F4,  //f32, in seconds
+            visualize_fog: 0x006B8310, // 0 hides fog
         }
     }
 }
