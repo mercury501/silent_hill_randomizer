@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'silent_hill_rustomizer'",
+            "name": "Debug executable 'silent_hill_randomizer'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=silent_hill_rustomizer",
-                    "--package=silent_hill_rustomizer"
+                    "--bin=silent_hill_randomizer",
+                    "--package=silent_hill_randomizer"
                 ],
                 "filter": {
-                    "name": "silent_hill_rustomizer",
+                    "name": "silent_hill_randomizer",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'silent_hill_rustomizer'",
+            "name": "Debug unit tests in executable 'silent_hill_randomizer'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=silent_hill_rustomizer",
-                    "--package=silent_hill_rustomizer"
+                    "--bin=silent_hill_randomizer",
+                    "--package=silent_hill_randomizer"
                 ],
                 "filter": {
-                    "name": "silent_hill_rustomizer",
+                    "name": "silent_hill_randomizer",
                     "kind": "bin"
                 }
             },

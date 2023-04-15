@@ -1458,7 +1458,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "silent_hill_rustomizer"
+name = "silent_hill_randomizer"
 version = "0.1.0"
 dependencies = [
  "byteorder",
